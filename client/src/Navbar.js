@@ -7,14 +7,14 @@ const { Link } = require("react-router-dom");
 
 const API_BASE = "http://localhost:8080";
 
-const Navbar = ({cartCount, setCartCount, fetchCartCount, isAdmin, setStatus, status, logOut}) => {
+const Navbar = ({ cartCount, setCartCount, fetchCartCount, role, setStatus, status, logOut }) => {
 
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchCartCount();
-      }, [cartCount]);
-    
+    }, [cartCount]);
+
 
 
     return (
@@ -25,13 +25,19 @@ const Navbar = ({cartCount, setCartCount, fetchCartCount, isAdmin, setStatus, st
             <Link to="/my-account" style={{ padding: "10px" }}>
                 Profile
             </Link>
-            
-            {(isAdmin) ? (
+
+            {role.includes("systemAdmin") ? (
                 <Link to="/add-food" style={{ padding: "10px" }}>
-                Add Food
-            </Link>
-            ) : (null)}
-            
+                    Add Food
+                </Link>
+            ) : null}
+
+{role.includes("eventCoordinator") ? (
+                <Link to="/event-management" style={{ padding: "10px" }}>
+                    Event Management
+                </Link>
+            ) : null}
+
             <Link to="/register" style={{ padding: "10px" }}>
                 Register
             </Link>
@@ -42,17 +48,17 @@ const Navbar = ({cartCount, setCartCount, fetchCartCount, isAdmin, setStatus, st
                 </Link>
             ) : (
                 <span>
-                <Link to="/login" style={{ padding: "10px" }} onClick={logOut}>
-                    Logout
-                </Link>
+                    <Link to="/login" style={{ padding: "10px" }} onClick={logOut}>
+                        Logout
+                    </Link>
 
-                <Link to={`/cart/${localStorage.getItem('username')}`}>
-                <Badge badgeContent={cartCount} color="primary">
-                    <MailIcon color="action" />
-                </Badge>
-            </Link>
-            </span>
-                
+                    <Link to={`/cart/${localStorage.getItem('username')}`}>
+                        <Badge badgeContent={cartCount} color="primary">
+                            <MailIcon color="action" />
+                        </Badge>
+                    </Link>
+                </span>
+
             )}
 
         </nav>

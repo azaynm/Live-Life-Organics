@@ -21,36 +21,33 @@ router.get('/isAdmin/:id', async (req, res) => {
     const id = req.params.id;
 
     const user = await User.findById(id);
-
-    if(user.isAdmin){
+    
         res.status(200).json({
             status: true,
-            role: "Admin",
+            user: user,
         });
-    }
-
-    else{
-        res.status(200).json({
-            status: false,
-            role: "User",
-        });
-    }
-  
-  });
-
-
-    router.get("/getId/:id", async (req, res) => {
-        const id = req.params.id;
-        const usernames = await User.find();
-        const username = usernames.filter(e => e.userName == id);
-        if(username){
-            res.status(200).json({
-                isAdmin: username[0].isAdmin, 
-            });
-        }
     
     
 });
+
+
+router.get("/getId/:id", async (req, res) => {
+    const id = req.params.id;
+    
+    try {
+        const user = await User.findOne({ userName: id });
+        
+        if (user) {
+            
+            res.status(200).json({ user });
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 
 
 

@@ -10,7 +10,7 @@ import axios from 'axios';
 const API_BASE = "http://localhost:8080";
 
 
-const MyAccount = ({ isAdmin }) => {
+const MyAccount = ({ role }) => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
 
@@ -64,7 +64,7 @@ const MyAccount = ({ isAdmin }) => {
     }
 
     const fetchPaymentDetails = async () => {
-        if (isAdmin) {
+        if (role.includes("systemAdmin")) {
             try {
                 const { data: response } = await axios.get(`http://localhost:8080/api/payment/payments`);
                 setOrders(response);
@@ -83,7 +83,7 @@ const MyAccount = ({ isAdmin }) => {
     return (
         <div className='container'>
             <div className='row'>Howdy </div>
-            {(isAdmin ?
+            {(role.includes("systemAdmin") ?
                 (<div>
 
                     {orders.map(item => (

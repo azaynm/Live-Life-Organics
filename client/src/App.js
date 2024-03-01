@@ -22,6 +22,7 @@ import axios from 'axios';
 import RoleProtected from './RoleProtected';
 import Payment from './pages/Payment';
 import { fabClasses } from '@mui/material';
+import EventManagement from './pages/EventManagement';
 
 
 
@@ -32,7 +33,7 @@ const API_BASE = "http://localhost:8080";
 
 
 function App() {
-  const [role, setRole] = ([]);
+  
   const baseURL = `http://localhost:8080/api/cart/user/${localStorage.getItem('username')}`;
   const key = localStorage.getItem("rfkey");
   const [homeFoodData, setHomeFoodData] = useState([])
@@ -46,7 +47,8 @@ function App() {
 
   const [total, setTotal] = useState("")
   const [quantity, setQuantity] = useState("")
-  const [isAdmin, setIsAdmin] = useState(false);
+
+  const [role, setRole] = useState(["user"]);
 
   const [cartTotal, setCartTotal] = useState("");
   const [orderData, setOrderData] = useState([]);
@@ -82,7 +84,9 @@ function App() {
   const fetchRole = async () => {
     try {
       const { data: response } = await axios.get(`http://localhost:8080/api/users/getId/${localStorage.getItem("username")}`);
-      setIsAdmin(response.isAdmin);
+      
+      setRole(response.user.roles);
+      console.log("Your role is "+ response.user.roles);
       console.log(response);
 
     } catch (error) {
@@ -269,7 +273,7 @@ function App() {
     <Context.Provider>
       <BrowserRouter>
         <div>
-          <Navbar cartCount={cartCount} setCartCount={setCartCount} fetchCartCount={fetchCartCount} isAdmin={isAdmin} setStatus={setStatus} status={status} logOut={logOut} />
+          <Navbar cartCount={cartCount} setCartCount={setCartCount} fetchCartCount={fetchCartCount} role={role} setStatus={setStatus} status={status} logOut={logOut} />
           <Routes>
 
             <Route path='/' element={<Home homeFoodData={homeFoodData} homeFoodLoading={homeFoodLoading} />} />
@@ -288,9 +292,18 @@ function App() {
 
             />
 
+
+<Route path='/event-management'
+              element={
+                <RoleProtected role={role}>
+                  <EventManagement />
+                </RoleProtected>
+              }
+            />
+
             <Route path='/add-food'
               element={
-                <RoleProtected isAdmin={isAdmin}>
+                <RoleProtected role={role}>
                   <AddFood />
                 </RoleProtected>
               }
@@ -299,7 +312,7 @@ function App() {
             <Route path='/my-account'
               element={
                 <Protected isLoggedIn={status}>
-                  <MyAccount isAdmin={isAdmin}/>
+                  <MyAccount role={role}/>
                 </Protected>
               }
             />
