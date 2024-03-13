@@ -23,6 +23,8 @@ import RoleProtected from './RoleProtected';
 import Payment from './pages/Payment';
 import { fabClasses } from '@mui/material';
 import EventManagement from './pages/EventManagement';
+import DeliveryManagement from './pages/DeliveryManagement';
+
 
 
 
@@ -33,7 +35,8 @@ const API_BASE = "http://localhost:8080";
 
 
 function App() {
-  
+  const [categories, setCategories] = useState(["Entrees", "Appetizers", "SideDishes", "Salads", "Soups", "Desserts", "Beverages", "Specials"]);
+
   const baseURL = `http://localhost:8080/api/cart/user/${localStorage.getItem('username')}`;
   const key = localStorage.getItem("rfkey");
   const [homeFoodData, setHomeFoodData] = useState([])
@@ -56,6 +59,8 @@ function App() {
 
   const [status, setStatus] = useState(false);
   const token = localStorage.getItem('rfkey');
+
+
 
   const checkLogin = async () => {
     const user = {
@@ -115,21 +120,7 @@ function App() {
   }, [cartFoodData]);
 
 
-  const fetchFoodData = async () => {
-    setHomeFoodLoading(true);
-    try {
-      const { data: response } = await axios.get('http://localhost:8080/api/foods');
-      setHomeFoodData(response);
-      console.log(response);
-    } catch (error) {
-      console.error(error.message);
-    }
-    setHomeFoodLoading(false);
-  }
-
-  useEffect(() => {
-    fetchFoodData();
-  }, []);
+  
 
   const fetchCartFoodData = async () => {
     setCartFoodLoading(true);
@@ -252,6 +243,7 @@ function App() {
     }).then((res) => {
       if (res.ok) {
         localStorage.setItem("rfkey", "");
+        localStorage.setItem("username", "");
         console.log("logged out successfully");
         window.location.reload(false);
         setStatus(false);
@@ -276,7 +268,7 @@ function App() {
           <Navbar cartCount={cartCount} setCartCount={setCartCount} fetchCartCount={fetchCartCount} role={role} setStatus={setStatus} status={status} logOut={logOut} />
           <Routes>
 
-            <Route path='/' element={<Home homeFoodData={homeFoodData} homeFoodLoading={homeFoodLoading} />} />
+            <Route path='/' element={<Home categories={categories} />} />
 
             <Route path='/:id' element={<SingleFood fetchCartFoodData={fetchCartFoodData} fetchCartCount={fetchCartCount} addToCart={addToCart} setLoading={setLoading} setData={setData} total={total} calculateTotal={calculateTotal} data={data} />} />
             <Route path='/update/:id' element={<UpdateFood />} />
@@ -292,6 +284,14 @@ function App() {
 
             />
 
+<Route path='/delivery-management'
+              element={
+                <RoleProtected role={role}>
+                  <DeliveryManagement />
+                </RoleProtected>
+              }
+            />
+
 
 <Route path='/event-management'
               element={
@@ -304,7 +304,7 @@ function App() {
             <Route path='/add-food'
               element={
                 <RoleProtected role={role}>
-                  <AddFood />
+                  <AddFood categories={categories}/>
                 </RoleProtected>
               }
             />

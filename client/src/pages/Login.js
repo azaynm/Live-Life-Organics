@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useNavigate } from "react-router-dom";
 import { useState, } from "react";
+import Swal from 'sweetalert2';
 
 const API_BASE = "http://localhost:8080";
 
@@ -14,27 +15,64 @@ const Login = () => {
     const [password, setPassword] = useState("");
 
     const checkLogin = async () => {
-        await fetch(API_BASE + "/api/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        }).then((res) =>{
-            if(res.ok) navigate('/my-account');
-            return res.json();
-        }).then(async(data) =>{
-            console.log(data.refreshToken)
-            localStorage.setItem('rfkey', data.refreshToken);
-            localStorage.setItem('isLogged', true);
-            await setUsername();
-            window.location.reload(false);
-        });
-        
+
+        if (!email) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please enter email'
+            });
+            return;
+        }
+
+        if (!password) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please enter password.'
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(API_BASE + "/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+    
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Success...',
+                    text: 'You have successfully logged in'
+                });
+                navigate('/my-account');
+                const data = await response.json();
+                console.log(data.refreshToken);
+                localStorage.setItem('rfkey', data.refreshToken);
+                localStorage.setItem('isLogged', true);
+                await setUsername();
+                window.location.reload(false);
+                
+                
+            } else {
+                throw new Error('Invalid Login!');
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: error.message
+            });
+        }
     }
+    
 
     const setUsername = async () => {
         await fetch(API_BASE + "/api/getUser", {

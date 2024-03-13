@@ -1,37 +1,68 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Cart from "../models/Cart.js";
+import Food from "../models/Food.js";
 
 const router = Router();
 
+
 router.post("/add-item", async (req, res) => {
+    try {
+        const { userId, foodId, quantity, total } = req.body;
 
-    const userId = req.body.userId;
-    const foodId = req.body.foodId;
-    const foodName = req.body.foodName;
-    const foodImage = req.body.foodImage;
-    const quantity = req.body.quantity;
-    const total = req.body.total;
+        // Fetch the food by its ID
+        const food = await Food.findById(foodId);
 
+        // Create a new cart item object
+        const newItem = {
+            customerId: userId,
+            food: food, // Assign the fetched food object
+            quantity,
+            subtotal: total // Assuming total is the subtotal for this item
+        };
 
-    //res.secure_url
+        // Create a new cart instance
+        const newCart = new Cart(newItem);
 
-    const newCartData = {
-        userId,
-        foodId,
-        foodName,
-        quantity,
-        foodImage,
-        total
+        // Save the new cart item to the database
+        await newCart.save();
 
+        res.json('Item added to the cart');
+    } catch (error) {
+        console.error('Error adding item to cart:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-    const newCart = new Cart(newCartData);
-
-    newCart.save()
-        .then(() => res.json('Item Added to the Cart'))
-        .catch(err => res.status(400).json('Error: ' + err));
 });
+
+
+// router.post("/add-item", async (req, res) => {
+
+//     const userId = req.body.userId;
+//     const foodId = req.body.foodId;
+//     const foodName = req.body.foodName;
+//     const foodImage = req.body.foodImage;
+//     const quantity = req.body.quantity;
+//     const total = req.body.total;
+
+
+//     //res.secure_url
+
+//     const newCartData = {
+//         userId,
+//         foodId,
+//         foodName,
+//         quantity,
+//         foodImage,
+//         total
+
+//     }
+
+//     const newCart = new Cart(newCartData);
+
+//     newCart.save()
+//         .then(() => res.json('Item Added to the Cart'))
+//         .catch(err => res.status(400).json('Error: ' + err));
+// });
 
 router.get("/user/:id", async (req, res) => {
     const id = req.params.id;

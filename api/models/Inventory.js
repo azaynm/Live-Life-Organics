@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const foodSchema = new Schema({
-    name:{
-        type: String
+const inventorySchema = new Schema({
+    foodId:{
+        type: Object
     },
-    description:{
+    itemName:{
         type: String
     },
     quantity:{
@@ -14,7 +14,7 @@ const foodSchema = new Schema({
     },
     category:{
         type:[String],
-        enum: ["Appetizers", "Entrees", "SideDishes", "Salads", "Soups", "Desserts", "Beverages", "Specials"],
+        enum: ["Produce", "Meat", "Beverages", "Utensils"],
     },
     supplier:{
         type: Object
@@ -24,11 +24,8 @@ const foodSchema = new Schema({
     },
     sellingPrice:{
         type: Number
-    },
-    image:{
-        type: String
     }
 });  
 
-const Food = mongoose.model("Food", foodSchema);
-export default Food;
+const Inventory = mongoose.model("Inventory", inventorySchema);
+export default Inventory;

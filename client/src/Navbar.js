@@ -18,37 +18,46 @@ const Navbar = ({ cartCount, setCartCount, fetchCartCount, role, setStatus, stat
 
 
     return (
-        <nav style={{ textAlign: "center", marginTop: "20px" }}>
-            <Link to="/" style={{ padding: "10px" }}>
+        <nav className="bg-dark" style={{ textAlign: "center", marginTop: "0px" }}>
+
+            
+
+            <Link to="/" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
                 Home
             </Link>
-            <Link to="/my-account" style={{ padding: "10px" }}>
+            <Link to="/my-account" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
                 Profile
             </Link>
 
             {role.includes("systemAdmin") ? (
-                <Link to="/add-food" style={{ padding: "10px" }}>
+                <Link to="/add-food" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
                     Add Food
                 </Link>
             ) : null}
 
-{role.includes("eventCoordinator") ? (
-                <Link to="/event-management" style={{ padding: "10px" }}>
+            {role.includes("eventCoordinator") ? (
+                <Link to="/event-management" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
                     Event Management
                 </Link>
             ) : null}
 
-            <Link to="/register" style={{ padding: "10px" }}>
+            {role.includes("deliveryStaff") ? (
+                <Link to="/delivery-management" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
+                    Delivery Management
+                </Link>
+            ) : null}
+
+            <Link to="/register" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
                 Register
             </Link>
             {(!status) ? (
 
-                <Link to="/login" style={{ padding: "10px" }}>
+                <Link to="/login" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
                     Login
                 </Link>
             ) : (
                 <span>
-                    <Link to="/login" style={{ padding: "10px" }} onClick={logOut}>
+                    <Link to="/login" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }} onClick={logOut}>
                         Logout
                     </Link>
 

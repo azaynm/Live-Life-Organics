@@ -1,11 +1,26 @@
 import React, { useState } from 'react'
 import GridLayout from '../components/GridLayout'
 
-const Home = ({homeFoodData, homeFoodLoading}) => {
+import Menu from './Menu';
+
+const Home = ({ homeFoodData, homeFoodLoading}) => {
+  
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
   return (
     <div>
-      <GridLayout homeFoodData={homeFoodData} homeFoodLoading={homeFoodLoading}/>
       
+      <button className='btn btn-primary' onClick={() => {
+                setIsOpenMenu(true)
+                console.log('menu clicked clicked')
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}>Menu</button>
+
+
+      {isOpenMenu && (
+
+        <Menu setIsOpenMenu={setIsOpenMenu}/>
+      )}
     </div>
   )
 }

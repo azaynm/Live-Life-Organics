@@ -38,16 +38,24 @@ router.post("/upload", upload.single("image"), async(req, res) => {
   const result = await cloudinary.v2.uploader.upload(req.file.path);
 
   const name = req.body.name;
-    const price = req.body.price;
-    const description = req.body.description;
+  const description = req.body.description;
+  const quantity = req.body.quantity;
+  const category = req.body.category;
+  const supplier = req.body.supplier;
+  const cost = req.body.cost;
+    const sellingPrice = req.body.sellingPrice;
     const image = result.secure_url;
    
     //res.secure_url
 
     const newFoodData = {
         name,
-        price,
         description,
+        quantity,
+        category,
+        supplier,
+        cost,
+        sellingPrice,
         image
        
     }
@@ -59,11 +67,100 @@ router.post("/upload", upload.single("image"), async(req, res) => {
         .catch(err => res.status(400).json('Error: '+ err));
 });
 
-
-router.get('/foods', async (req, res) => {
-    const todos = await Food.find();
-    res.json(todos);
+router.get('/get-food', async (req, res) => {
+  const id = req.body.id;
+  const food = await Food.findById(id);
+  res.json(food);
 })
+
+
+router.get('/:category', async (req, res) => {
+  let category = req.params.category;
+  // Capitalize the first character of the category
+  category = category.charAt(0).toUpperCase() + category.slice(1);
+  try {
+    const categoryItems = await Food.find({ category: category });
+    res.json(categoryItems);
+  } catch (error) {
+    console.error(`Error fetching ${category}:`, error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
+// router.get('/appetizers', async (req, res) => {
+//   try {
+//     const appetizers = await Food.find({ category: 'Appetizers' });
+//     res.json(appetizers);
+//   } catch (error) {
+//     console.error("Error fetching appetizers:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// router.get('/side-dishes', async (req, res) => {
+//   try {
+//     const sideDishes = await Food.find({ category: 'Side Dishes' });
+//     res.json(sideDishes);
+//   } catch (error) {
+//     console.error("Error fetching side dishes:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// router.get('/salads', async (req, res) => {
+//   try {
+//     const salads = await Food.find({ category: 'Salads' });
+//     res.json(salads);
+//   } catch (error) {
+//     console.error("Error fetching salads:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// router.get('/soups', async (req, res) => {
+//   try {
+//     const soups = await Food.find({ category: 'Soups' });
+//     res.json(soups);
+//   } catch (error) {
+//     console.error("Error fetching soups:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// router.get('/desserts', async (req, res) => {
+//   try {
+//     const desserts = await Food.find({ category: 'Desserts' });
+//     res.json(desserts);
+//   } catch (error) {
+//     console.error("Error fetching desserts:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// router.get('/beverages', async (req, res) => {
+//   try {
+//     const beverages = await Food.find({ category: 'Beverages' });
+//     res.json(beverages);
+//   } catch (error) {
+//     console.error("Error fetching beverages:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+
+// router.get('/specials', async (req, res) => {
+//   try {
+//     const specials = await Food.find({ category: 'Specials' });
+//     res.json(specials);
+//   } catch (error) {
+//     console.error("Error fetching specials:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+
 
 
 router.get('/:id', async (req, res) => {

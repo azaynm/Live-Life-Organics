@@ -3,29 +3,24 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const cartSchema = new Schema({
-    userId:{
-        type: String
+    customerId: {
+        type: Schema.Types.ObjectId, // Reference to the customer ID
+        ref: 'User', // Reference to the Customer model
+        required: true
     },
-    foodId:{
-        type: String
+    food: {
+        type: Schema.Types.ObjectId, // Reference to the Food ID
+        ref: 'Food', // Reference to the Food model
+        required: true
     },
-    foodName:{
-        type: String
+    quantity: {
+        type: Number,
+        default: 1 // Default quantity is 1
     },
-    foodImage:{
-        type: String
-    },
-    quantity:{
-        type: String
-    },
-    total:{
-        type: String
-    },
-    isConfirmed:{
-        type: Boolean,
-        default: false
-    },
-});  
+    subtotal: {
+        type: Number // Subtotal for this item (quantity * sellingPrice)
+    }
+});
 
 const Cart = mongoose.model("Cart", cartSchema);
 export default Cart;
