@@ -8,7 +8,7 @@ const API_BASE = "http://localhost:8080";
 
 
 
-const Login = () => {
+const Login = ({setStatus}) => {
    
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -59,7 +59,7 @@ const Login = () => {
                 localStorage.setItem('isLogged', true);
                 await setUsername();
                 window.location.reload(false);
-                
+                setStatus(true)
                 
             } else {
                 throw new Error('Invalid Login!');

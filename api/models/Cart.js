@@ -13,12 +13,23 @@ const cartSchema = new Schema({
         ref: 'Food', // Reference to the Food model
         required: true
     },
+    name:{
+        type: String,
+        required: true
+    },
+    imageUrl:{
+        type: String
+    },
     quantity: {
         type: Number,
         default: 1 // Default quantity is 1
     },
     subtotal: {
         type: Number // Subtotal for this item (quantity * sellingPrice)
+    },
+    isConfirmed: {
+        type: Boolean, // Subtotal for this item (quantity * sellingPrice)
+        default: false
     }
 });
 

@@ -24,6 +24,8 @@ import Payment from './pages/Payment';
 import { fabClasses } from '@mui/material';
 import EventManagement from './pages/EventManagement';
 import DeliveryManagement from './pages/DeliveryManagement';
+import Reservation from './pages/Reservation';
+import Test from './pages/Test';
 
 
 
@@ -64,7 +66,7 @@ function App() {
 
   const checkLogin = async () => {
     const user = {
-      refreshToken: token,
+      refreshToken: localStorage.getItem('rfkey'),
     };
 
 
@@ -72,11 +74,11 @@ function App() {
     console.log(response.error);
     if (response.error === false) {
       setStatus(true);
-      console.log("setted true");
+      console.log("logged in setted true");
     }
     else {
       setStatus(false);
-      console.log("setted false");
+      console.log("logged in setted false");
     }
   }
 
@@ -105,129 +107,14 @@ function App() {
 
 
 
-  const fetchCartCount = async () => {
-    try {
-      const { data: response } = await axios.get(`http://localhost:8080/api/cart/users/${localStorage.getItem('username')}`);
-      setCartCount(response);
-
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
-  useEffect(() => {
-    fetchCartCount();
-  }, [cartFoodData]);
 
 
-  
-
-  const fetchCartFoodData = async () => {
-    setCartFoodLoading(true);
-    try {
-      const { data: response } = await axios.get(`http://localhost:8080/api/cart/user/${localStorage.getItem('username')}`);
-      setCartFoodData(response);
-      console.log(response);
-    } catch (error) {
-      console.error(error.message);
-    }
-    setCartFoodLoading(false);
-  }
-
-  useEffect(() => {
-    fetchCartFoodData();
-  }, []);
-
-  useEffect(() => {
-    fetchCartFoodData();
-  }, [setCartFoodData]);
-
-  useEffect(() => {
-    fetchCartFoodData();
-  }, [setCartFoodData]);
-
-  const deleteItem = async (id) => {
-
-    await Swal.fire({
-      title: 'Do you want to remove this from?',
-      showDenyButton: false,
-      showCancelButton: true,
-      confirmButtonText: 'Remove',
-      denyButtonText: `Cancel`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        Swal.fire('Removed Item!', '', 'success')
-        const data = fetch(`http://localhost:8080/api/cart/delete/${id}`, { method: "DELETE" })
-          .then(res => res.json());
-        setCartFoodData(cartFoodData => cartFoodData.filter(cartFoodItem => cartFoodItem._id !== data._id))
 
 
-      } else if (result.isDenied) {
-        Swal.fire('Item is not removed', '', 'info')
-      }
-    })
-    getCartTotal();
-    fetchCartFoodData();
-  }
-
-  const getCartTotal = async () => {
-    try {
-      const { data: response } = await axios.get(`http://localhost:8080/api/cart/user/getTotal/${localStorage.getItem("username")}`);
-      setCartTotal(response);
-      console.log(response);
-    } catch (error) {
-      console.error(error.message);
-    }
-
-  }
-
-  useEffect(() => {
-    getCartTotal();
-  }, []);
 
 
-  const calculateTotal = ({ target }) => {
-    setQuantity(target.value);
-    setTotal(target.value * data.price);
-  }
 
-  const addToCart = async () => {
 
-    Swal.fire({
-      title: 'Are you sure want to add this to the cart?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, add it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Added!',
-          'success'
-        )
-        const cartItem = {
-          userId: localStorage.getItem('username'),
-          foodId: data._id,
-          foodName: data.name,
-          foodImage: data.image,
-          quantity: quantity,
-          total: total
-        };
-
-        const headers = {
-          'Authorization': 'Bearer my-token',
-          'My-Custom-Header': 'foobar'
-        };
-        axios.post(API_BASE + '/api/cart/add-item', cartItem, { headers });
-        setCartFoodData(...cartFoodData, cartItem);
-        fetchCartFoodData();
-        getCartTotal();
-      }
-    });
-
-  }
 
   const logOut = async () => {
 
@@ -265,20 +152,39 @@ function App() {
     <Context.Provider>
       <BrowserRouter>
         <div>
-          <Navbar cartCount={cartCount} setCartCount={setCartCount} fetchCartCount={fetchCartCount} role={role} setStatus={setStatus} status={status} logOut={logOut} />
+          <Navbar role={role} setStatus={setStatus} status={status} logOut={logOut} />
           <Routes>
 
             <Route path='/' element={<Home categories={categories} />} />
 
-            <Route path='/:id' element={<SingleFood fetchCartFoodData={fetchCartFoodData} fetchCartCount={fetchCartCount} addToCart={addToCart} setLoading={setLoading} setData={setData} total={total} calculateTotal={calculateTotal} data={data} />} />
-            <Route path='/update/:id' element={<UpdateFood />} />
-            <Route path='/payment' element={<Payment cartTotal={cartTotal} cartFoodData={cartFoodData} />} />
+            
 
+            <Route path='/reservation' element={
+            
+            <Reservation />
+            } />
+
+
+<Route path='/my-account'
+              element={
+                <Protected isLoggedIn={status}>
+                  <MyAccount role={role}/>
+                </Protected>
+              }
+            />
+
+<Route path='/test'
+              element={
+                <Protected isLoggedIn={status}>
+                  <Test/>
+                </Protected>
+              }
+            />
 
             <Route path='/cart/:id'
               element={
                 <Protected isLoggedIn={status}>
-                  <Cart deleteItem={deleteItem} fetchCartFoodData={fetchCartFoodData} cartFoodLoading={cartFoodLoading} cartFoodData={cartFoodData} addToCart={addToCart} getCartTotal={getCartTotal} cartTotal={cartTotal} orderData={orderData} setOrderData={setOrderData} />
+                  <Cart/>
                 </Protected>
               }
 

@@ -2,21 +2,24 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import Cart from "../models/Cart.js";
 import Food from "../models/Food.js";
+import User from "../models/User.js";
 
 const router = Router();
 
 
 router.post("/add-item", async (req, res) => {
     try {
-        const { userId, foodId, quantity, total } = req.body;
+        const { customerId, foodId, quantity, total } = req.body;
 
         // Fetch the food by its ID
         const food = await Food.findById(foodId);
 
         // Create a new cart item object
         const newItem = {
-            customerId: userId,
-            food: food, // Assign the fetched food object
+            customerId,
+            food: food._id, // Assign the fetched food's ObjectId
+            name: food.name,
+            imageUrl: food.imageUrl,
             quantity,
             subtotal: total // Assuming total is the subtotal for this item
         };
@@ -33,6 +36,7 @@ router.post("/add-item", async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 // router.post("/add-item", async (req, res) => {
@@ -65,11 +69,20 @@ router.post("/add-item", async (req, res) => {
 // });
 
 router.get("/user/:id", async (req, res) => {
-    const id = req.params.id;
-    const cartItems = await Cart.find();
-    const cartItem = cartItems.filter(e => e.userId == id && e.isConfirmed == false);
-    res.json(cartItem);
+    try {
+        const id = req.params.id;
+        const cartItems = await Cart.find();
+        
+        const user = await User.findOne({ userName: id });
+
+        const cartItem = cartItems.filter(e => String(e.customerId) === String(user._id) && e.isConfirmed === false);
+        res.json(cartItem);
+    } catch (error) {
+        console.error("Error fetching cart items for user:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
+
 
 router.put("/user/setConfirmed/:id", async (req, res) => {
     const id = req.params.id;

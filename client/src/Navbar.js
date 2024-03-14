@@ -7,13 +7,11 @@ const { Link } = require("react-router-dom");
 
 const API_BASE = "http://localhost:8080";
 
-const Navbar = ({ cartCount, setCartCount, fetchCartCount, role, setStatus, status, logOut }) => {
+const Navbar = ({ role, setStatus, status, logOut }) => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchCartCount();
-    }, [cartCount]);
+
 
 
 
@@ -21,7 +19,9 @@ const Navbar = ({ cartCount, setCartCount, fetchCartCount, role, setStatus, stat
         <nav className="bg-dark" style={{ textAlign: "center", marginTop: "0px" }}>
 
             
-
+<Link to={`/cart/${localStorage.getItem('username')}`} style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
+                Cart
+            </Link>
             <Link to="/" style={{ color: "white", fontWeight: "bold", textDecoration: "none", padding: "10px" }}>
                 Home
             </Link>
@@ -61,11 +61,11 @@ const Navbar = ({ cartCount, setCartCount, fetchCartCount, role, setStatus, stat
                         Logout
                     </Link>
 
-                    <Link to={`/cart/${localStorage.getItem('username')}`}>
+                    {/* <Link to={`/cart/${localStorage.getItem('username')}`}>
                         <Badge badgeContent={cartCount} color="primary">
                             <MailIcon color="action" />
                         </Badge>
-                    </Link>
+                    </Link> */}
                 </span>
 
             )}
