@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 import './MenuCategory.css';
 import FormData from 'form-data';
+import './MenuCategory.css';
 
 const MenuCategory = ({ category }) => {
 
@@ -14,12 +15,12 @@ const MenuCategory = ({ category }) => {
         try {
             setIsLoading(true);
             const response = await axios.get(`${API_BASE}/api/${category}`);
-            const items = response.data;
+            const items = response.data.map(item => ({ ...item, quantity: 1 })); // Add quantity property to each item
             setCategoryMenuItems(items);
         } catch (error) {
             console.log("Error fetching data:", error);
         } finally {
-            setIsLoading(false); // Set isLoading to false regardless of success or error
+            setIsLoading(false);
         }
     };
 
@@ -28,8 +29,8 @@ const MenuCategory = ({ category }) => {
     }, []); // Fetch campaigns initially
 
 
-    const addItemToCart = (foodId) => {
-        
+    const addItemToCart = (foodId, quantity) => {
+
         Swal.fire({
             title: "Add this to Cart?",
             text: "You can remove this from the Cart!",
@@ -44,10 +45,9 @@ const MenuCategory = ({ category }) => {
                 const data = {
                     id: localStorage.getItem('username'),
                     food: foodId,
-                    quantity: 5,
-                    subTotal: 60
+                    quantity: quantity
                 };
-    
+
                 try {
                     axios.post(`${API_BASE}/api/cart/add-item`, data);
                     console.log("Data uploaded successfully:", data);
@@ -67,27 +67,54 @@ const MenuCategory = ({ category }) => {
             }
         });
     };
+
+
+    const handleIncreaseQuantity = (index) => {
+        console.log('Increasing quantity for item at index:', index);
+        setCategoryMenuItems(prevItems => {
+            const updatedItems = [...prevItems];
+            updatedItems[index].quantity += 1;
+            console.log('Updated items:', updatedItems);
+            return updatedItems;
+        });
+    };
     
+    const handleDecreaseQuantity = (index) => {
+        console.log('Decreasing quantity for item at index:', index);
+        setCategoryMenuItems(prevItems => {
+            const updatedItems = [...prevItems];
+            if (updatedItems[index].quantity > 1) {
+                updatedItems[index].quantity -= 1;
+            }
+            console.log('Updated items:', updatedItems);
+            return updatedItems;
+        });
+    };
+
 
     return (
         <div className="scrollable-container">
-            <div className="grid-container">
+            <div className="row row-cols-1 row-cols-md-3 g-4">
                 {categoryMenuItems.map((menuItem, index) => (
-                    <div>
-                        <button key={index}>
-                            <div className="grid-item">
-                                <img src={menuItem.image} alt="..." style={{ width: '100px', height: '100px' }} />
-                                <div>{menuItem.name}</div>
-                                <h4>Rs. {menuItem.sellingPrice}</h4>
+                    <div key={index} className="col">
+                        <div className="card h-100">
+                            <img src={menuItem.image} className="card-img-top" alt="..." style={{ width: '100px', height: '100px' }} />
+                            <div className="card-body">
+                                <h5 className="card-title">{menuItem.name}</h5>
+                                <p className="card-text">Rs. {menuItem.sellingPrice}</p>
+                                <div className='d-flex justify-content-center align-items-center'>
+                                    <button className="btn btn-sm btn-secondary" onClick={() => handleDecreaseQuantity(index)}>-</button>
+                                    <input type="text" className="form-control mx-2" value={menuItem.quantity} readOnly />
+                                    <button className="btn btn-sm btn-secondary" onClick={() => handleIncreaseQuantity(index)}>+</button>
+                                </div>
+                                <button className='btn btn-danger mt-2' onClick={() => addItemToCart(menuItem._id, menuItem.quantity)}>Add to Cart</button>
                             </div>
-                        </button>
-
-                        <button className='btn btn-danger' onClick={() => addItemToCart(menuItem._id)}>Add to Cart</button>
+                        </div>
                     </div>
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
 export default MenuCategory

@@ -12,7 +12,7 @@ const router = Router();
 
 router.post("/add-item", async (req, res) => {
     try {
-        const { id, food, quantity, subTotal } = req.body;
+        const { id, food, quantity } = req.body;
 
         // Find the user by username
         const user = await User.findOne({ userName: id });
@@ -28,13 +28,16 @@ router.post("/add-item", async (req, res) => {
 
         // Extract userId and food details
         const customerId = String(user._id);
-        const { name, image, cost } = foodData;
+        const { name, image, cost, sellingPrice } = foodData;
+        console.log("selling price is"+ sellingPrice)
 
+        const subTotal = quantity*sellingPrice;
         // Create a new cart item
         const newCartData = {
             customerId,
             food,
             name,
+            price: sellingPrice,
             imageUrl: image,
             quantity,
             subTotal

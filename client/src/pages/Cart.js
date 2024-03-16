@@ -12,13 +12,25 @@ const Cart = () => {
 
   const [cartFoodData, setCartFoodData] = useState([]);
   const [cartFoodLoading, setCartFoodLoading] = useState(true);
-  
+  const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
+
+    const handleCheckout = () => {
+      navigate('/payment', { state: { total } });
+    };
+   
   const fetchCartFoodData = async () => {
     setCartFoodLoading(true);
     try {
       const { data: response } = await axios.get(`http://localhost:8080/api/cart/user/${localStorage.getItem('username')}`);
       setCartFoodData(response);
       console.log(response);
+
+      const totalSubTotal = response.reduce((accumulator, currentItem) => {
+        return accumulator + currentItem.subTotal;
+    }, 0);
+    setTotal(totalSubTotal); 
+
     } catch (error) {
       console.error(error.message);
     }
@@ -44,6 +56,7 @@ const Cart = () => {
           await fetch(`http://localhost:8080/api/cart/delete/${id}`, { method: "DELETE" });
           // Update cartFoodData after successful deletion
           setCartFoodData(cartFoodData.filter(cartFoodItem => cartFoodItem._id !== id));
+          
         } catch (error) {
           console.error('Error deleting item:', error);
           Swal.fire('Error!', 'Failed to remove item from cart.', 'error');
@@ -53,6 +66,14 @@ const Cart = () => {
       }
     });
   }
+
+  useEffect(() => {
+    // Recalculate total after cartFoodData has been updated
+    const newTotal = cartFoodData.reduce((accumulator, currentItem) => {
+      return accumulator + currentItem.subTotal;
+    }, 0);
+    setTotal(newTotal);
+  }, [cartFoodData]);
   
 
 
@@ -70,8 +91,10 @@ const Cart = () => {
 
               <div className='row d-flex flex-row'>
                 <img className='img-circle ' src={item.imageUrl} alt="..." style={{ width: '150px', height: '100px' }} />
-                <div className='col d-flex align-items-center'>{item.foodName}</div>
-                <div className='col d-flex align-items-center'>Rs. {item.total}</div>
+                <div className='col d-flex align-items-center'>{item.name}</div>
+                <div className='col d-flex align-items-center'>Rs. {item.price}</div>
+                <div className='col d-flex align-items-center'>{item.quantity}</div>
+                <div className='col d-flex align-items-center'>Rs. {item.subTotal}</div>
                 <div className='col d-flex align-items-center align-items-end'>
                   <Button variant="contained"  style={{ margin: '10px', width: '150px' }}>Edit</Button>
                   <Button variant="contained" onClick={
@@ -86,13 +109,17 @@ const Cart = () => {
               </div>
             </div>
           ))}
+
+          
         </div>
 
       )}
       <div className='row' style={{ position: 'fixed', marginBottom: '200px', marginRight: '200px', marginLeft: '200px', top: '400px' }}>
         
         <div className='col-sm'>
-        <Button variant="contained" style={{ margin: '10px', width: '150px' }}>Proceed to checkout</Button>
+        <Button variant="contained" style={{ margin: '10px', width: '150px' }} onClick={handleCheckout}>
+            Checkout Rs.{total}
+        </Button>
         </div>
         <div>
         </div>
