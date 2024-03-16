@@ -7,66 +7,50 @@ import User from "../models/User.js";
 const router = Router();
 
 
+
+
+
 router.post("/add-item", async (req, res) => {
     try {
-        const { customerId, foodId, quantity, total } = req.body;
+        const { id, food, quantity, subTotal } = req.body;
 
-        // Fetch the food by its ID
-        const food = await Food.findById(foodId);
+        // Find the user by username
+        const user = await User.findOne({ userName: id });
+        if (!user) {
+            return res.status(404).json('User not found');
+        }
 
-        // Create a new cart item object
-        const newItem = {
+        // Find the food item by its ID
+        const foodData = await Food.findById(food);
+        if (!foodData) {
+            return res.status(404).json('Food item not found');
+        }
+
+        // Extract userId and food details
+        const customerId = String(user._id);
+        const { name, image, cost } = foodData;
+
+        // Create a new cart item
+        const newCartData = {
             customerId,
-            food: food._id, // Assign the fetched food's ObjectId
-            name: food.name,
-            imageUrl: food.imageUrl,
+            food,
+            name,
+            imageUrl: image,
             quantity,
-            subtotal: total // Assuming total is the subtotal for this item
+            subTotal
         };
 
-        // Create a new cart instance
-        const newCart = new Cart(newItem);
-
         // Save the new cart item to the database
+        const newCart = new Cart(newCartData);
         await newCart.save();
 
-        res.json('Item added to the cart');
+        res.json('Item Added to the Cart');
+        console.log('Item Added to the Cart');
     } catch (error) {
         console.error('Error adding item to cart:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(400).json('Error: ' + error.message);
     }
-});
-
-
-
-// router.post("/add-item", async (req, res) => {
-
-//     const userId = req.body.userId;
-//     const foodId = req.body.foodId;
-//     const foodName = req.body.foodName;
-//     const foodImage = req.body.foodImage;
-//     const quantity = req.body.quantity;
-//     const total = req.body.total;
-
-
-//     //res.secure_url
-
-//     const newCartData = {
-//         userId,
-//         foodId,
-//         foodName,
-//         quantity,
-//         foodImage,
-//         total
-
-//     }
-
-//     const newCart = new Cart(newCartData);
-
-//     newCart.save()
-//         .then(() => res.json('Item Added to the Cart'))
-//         .catch(err => res.status(400).json('Error: ' + err));
-// });
+})
 
 router.get("/user/:id", async (req, res) => {
     try {

@@ -3,35 +3,19 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const paymentSchema = new Schema({
-    userId:{
+    email:{
         type: String
     },
-    name:{
+    reference:{
         type: String
     },
-
-    
-    foodId:{
-        type: Object
+    amount:{
+        type: Number
     },
-    
-
-    cardNumber:{
+    customer:{
         type: String
     },
-    date:{
-        type: String
-    },
-    cvv:{
-        type: String
-    },
-    billingAddress:{
-        type: String
-    },
-    zip:{
-        type: String
-    },
-    state:{
+    userName:{
         type: String
     },
     time: { type: Number, default: Date.now }

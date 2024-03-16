@@ -4,13 +4,11 @@ const Schema = mongoose.Schema;
 
 const cartSchema = new Schema({
     customerId: {
-        type: Schema.Types.ObjectId, // Reference to the customer ID
-        ref: 'User', // Reference to the Customer model
+        type: String, // Reference to the customer ID
         required: true
     },
     food: {
-        type: Schema.Types.ObjectId, // Reference to the Food ID
-        ref: 'Food', // Reference to the Food model
+        type: String, // Reference to the Food ID
         required: true
     },
     name:{
@@ -24,7 +22,7 @@ const cartSchema = new Schema({
         type: Number,
         default: 1 // Default quantity is 1
     },
-    subtotal: {
+    subTotal: {
         type: Number // Subtotal for this item (quantity * sellingPrice)
     },
     isConfirmed: {

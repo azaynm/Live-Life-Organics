@@ -1,8 +1,8 @@
 
 
 import { Navigate } from "react-router-dom";
-const RoleProtected = ({ role, children }) => {
-    if (!role.includes("systemAdmin") && !role.includes("eventCoordinator")) {
+const RoleProtected = ({ role, children, specificRole }) => {
+    if (!role.includes(specificRole)) {
         return <Navigate to="/" replace />;
     }
     return children;

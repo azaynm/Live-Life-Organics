@@ -9,6 +9,8 @@ import cartRoutes from "./routes/cart.js";
 import paymentRoutes from "./routes/payment.js";
 import deliveryRoutes from "./routes/delivery.js";
 import inventoryRoutes from "./routes/inventory.js";
+import orderRoutes from "./routes/order.js";
+import stripeRoutes from "./routes/stripeRoute.js";
 import cors from "cors";
 
 
@@ -36,7 +38,12 @@ app.use("/api", imageRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/delivery", deliveryRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/delivery", deliveryRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use('/api/stripe', stripeRoutes);
+
+
 
 
 

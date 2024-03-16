@@ -28,7 +28,8 @@ const MenuCategory = ({ category }) => {
     }, []); // Fetch campaigns initially
 
 
-    const addItemToCart = ({foodId}) => {
+    const addItemToCart = (foodId) => {
+        
         Swal.fire({
             title: "Add this to Cart?",
             text: "You can remove this from the Cart!",
@@ -39,11 +40,12 @@ const MenuCategory = ({ category }) => {
             confirmButtonText: "Add it!"
         }).then((result) => {
             if (result.isConfirmed) {
+
                 const data = {
-                    userId: "65e175ebe1a44422c1be63d7",
-                    foodId: "65f0287a7bc6e04cc4ed5057",
+                    id: localStorage.getItem('username'),
+                    food: foodId,
                     quantity: 5,
-                    total: 60
+                    subTotal: 60
                 };
     
                 try {

@@ -10,38 +10,27 @@ router.get('/payments', async (req, res) => {
     res.json(payments);
 })
 
-router.post("/add-order", async (req, res) => {
+router.post("/add-payment", async (req, res) => {
 
-    const userId = req.body.userId;
-    const name = req.body.name;
-    const foodId = req.body.foodId;
-    const cardNumber = req.body.cardNumber;
-    const date = req.body.date;
-    const cvv = req.body.cvv;
-    const billingAddress = req.body.billingAddress;
-    const zip = req.body.zip;
-    const state = req.body.state;
-
+    const email = req.body.email;
+    const reference = req.body.reference;
+    const amount = req.body.amount;
+    const customer = req.body.customer;
+    const userName = req.body.userName;
     
-
-    //res.secure_url
-
-    const newOrderData = {
-        userId,
-        name,
-        foodId,
-        cardNumber,
-        date,
-        cvv,
-        billingAddress,
-        zip,
-        state
+    
+    const newPaymentData = {
+        email,
+        reference,
+        amount,
+        customer,
+        userName
     }
 
-    const newOrder = new Payment(newOrderData);
+    const newPayment = new Payment(newPaymentData);
 
-    newOrder.save()
-        .then(() => res.json('Item Added to the Cart'))
+    newPayment.save()
+        .then(() => res.json('Payment Added to the Cart'))
         .catch(err => res.status(400).json('Error: ' + err));
 });
 

@@ -26,6 +26,7 @@ import EventManagement from './pages/EventManagement';
 import DeliveryManagement from './pages/DeliveryManagement';
 import Reservation from './pages/Reservation';
 import Test from './pages/Test';
+import PaymentGateway from './pages/PaymentGateway';
 
 
 
@@ -173,11 +174,10 @@ function App() {
               }
             />
 
-<Route path='/test'
+<Route path='/payment'
               element={
-                <Protected isLoggedIn={status}>
-                  <Test/>
-                </Protected>
+               
+                  <PaymentGateway/>
               }
             />
 

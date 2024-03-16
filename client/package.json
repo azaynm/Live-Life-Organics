@@ -20,6 +20,7 @@
     "react-horizontal-scrolling-menu": "^6.0.2",
     "react-icons": "^4.7.1",
     "react-scripts": "5.0.1",
+    "react-stripe-checkout": "^2.6.3",
     "sweetalert2": "^11.6.16",
     "web-vitals": "^2.1.4"
   },
