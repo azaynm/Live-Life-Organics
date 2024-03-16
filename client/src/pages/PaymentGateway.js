@@ -39,6 +39,7 @@ const PaymentGateway = () => {
                 // Calculate total after applying coupon
                 const totalWithDiscount = total - couponDiscountValue;
                 setTotalAfterCoupon(totalWithDiscount);
+                setInvalidCoupon(false);
             } else {
                 console.error('No gift cards found for the provided customer and code.');
                 setInvalidCoupon(true);
@@ -46,6 +47,7 @@ const PaymentGateway = () => {
         } catch (error) {
             console.error('Error while fetching coupon discount:', error);
             // Handle error, e.g., display an error message to the user
+            setInvalidCoupon(true);
         }
     };
 
@@ -81,25 +83,36 @@ const PaymentGateway = () => {
         handleToken(totalAfterCoupon, token);
     }
     return (
-        <div>
-            <h1>Payment</h1>
+        <div className="container">
+    <h1>Payment</h1>
+    <div className="row mb-3">
+        <div className="col-6">
             <TextField
                 label="Enter Coupon Code"
                 variant="outlined"
                 value={couponCode}
                 onChange={handleCouponCodeChange}
-                style={{ marginRight: '10px' }}
+                className="form-control"
             />
-            <Button variant="contained" color="primary" onClick={handleApplyCoupon} style={{ marginRight: '10px' }}>
+        </div>
+        <div className="col-3">
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleApplyCoupon}
+                className="btn btn-primary"
+            >
                 Apply Coupon
             </Button>
-            <div>
-                {/* Display message for invalid coupon */}
-                {invalidCoupon && <div style={{ color: 'red' }}>Invalid Coupon</div>}
-                <div>Total: Rs. {total}</div>
-                {couponDiscount > 0 && <div>Coupon Discount: Rs. {couponDiscount}</div>}
-                {couponDiscount > 0 && <div>Total After Coupon: Rs. {totalAfterCoupon}</div>}
-            </div>
+        </div>
+    </div>
+    <div>
+        {/* Display message for invalid coupon */}
+        {invalidCoupon && <div style={{ color: 'red' }}>Invalid Coupon</div>}
+        <div>Total: Rs. {total}</div>
+        {couponDiscount > 0 && <div>Coupon Discount: Rs. {couponDiscount}</div>}
+        {couponDiscount > 0 && <div>Total After Coupon: Rs. {totalAfterCoupon}</div>}
+    </div>
             <Stripe
                 stripeKey="pk_test_51OuRCSJ53U8MN5Mj2obY1BkeJ1cl0bDIc5PnHEAOWQZUaipW0AUb95gC5z0wV8ohGaV4nS9rk3t0q0nM9A4z9tjP00MZmzpukX"
                 token={tokenHandler}
