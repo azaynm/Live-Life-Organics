@@ -27,6 +27,7 @@ import DeliveryManagement from './pages/DeliveryManagement';
 import Reservation from './pages/Reservation';
 import Test from './pages/Test';
 import PaymentGateway from './pages/PaymentGateway';
+import OrderApproval from './pages/OrderApproval';
 
 
 
@@ -192,12 +193,20 @@ function App() {
 
 <Route path='/delivery-management'
               element={
-                <RoleProtected role={role}>
+                // <RoleProtected role={role} specificRole="systemAdmin">
                   <DeliveryManagement />
-                </RoleProtected>
+                // </RoleProtected>
               }
             />
 
+
+<Route path='/order-approval'
+              element={
+                // <RoleProtected role={role} specificRole="systemAdmin">
+                  <OrderApproval />
+                // </RoleProtected>
+              }
+            />
 
 <Route path='/event-management'
               element={

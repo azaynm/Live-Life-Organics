@@ -3,18 +3,22 @@ import axios from 'axios';
 import Stripe from 'react-stripe-checkout';
 import { Button, TextField } from '@mui/material';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentGateway = () => {
     const API_BASE = "http://localhost:8080";
     const [couponCode, setCouponCode] = useState('');
     const [couponDiscount, setCouponDiscount] = useState(0);
-    
+
     const [invalidCoupon, setInvalidCoupon] = useState(false);
 
     const location = useLocation();
-    const { total } = location.state;
+    const { total, cartFoodData } = location.state;
 
     const [totalAfterCoupon, setTotalAfterCoupon] = useState(total);
+
+    const navigate = useNavigate();
+
     const handleCouponCodeChange = (event) => {
         setCouponCode(event.target.value);
     };
@@ -52,67 +56,114 @@ const PaymentGateway = () => {
     };
 
     const handleToken = async (totalAmount, token) => {
-        const response = await axios.post("http://localhost:8080/api/stripe/pay", {
-            token: token.id,
-            amount: totalAmount,
-        })
-        console.log(response);
-        if (response.status === 200) {
-            // Assuming 'addToDatabase' is a function to add data to the database
-            console.log(response.data);
-            const charge = response.data;
-
-            // Chain the second POST request inside the first one
-            return axios.post("http://localhost:8080/api/payment/add-payment", {
-                email: charge.billing_details.name,
-                reference: charge.id,
-                amount: charge.amount,
-                customer: charge.customer,
-                userName: localStorage.getItem("username")
+        try {
+            const response = await axios.post("http://localhost:8080/api/stripe/pay", {
+                token: token.id,
+                amount: totalAmount,
             });
-        } else {
-            console.log("Stripe payment request failed");
-            // Return a rejected promise to skip the execution of the next .then() block
-            return Promise.reject("Stripe payment request failed");
+    
+            console.log(response);
+    
+            if (response.status === 200) {
+                const charge = response.data;
+    
+                // Chain the second POST request inside the first one
+                return axios.post("http://localhost:8080/api/payment/add-payment", {
+                    email: charge.billing_details.name,
+                    reference: charge.id,
+                    amount: charge.amount,
+                    customer: charge.customer,
+                    userName: localStorage.getItem("username")
+                })
+                .then((res2) => {
+                    // Access the data from the response of the second POST request
+                    const paymentId = res2.data._id;
+                    console.log("Payment ID:", paymentId);
+    
+                    // Assuming cartFoodData is defined somewhere in your code
+                    // Ensure it's accessible and has the correct data
+                    console.log("Cart Food Data:", cartFoodData);
+    
+                    // Assuming localStorage is accessible and has the correct data
+                    const customer = localStorage.getItem("username");
+    
+                    // Make the second POST request to add order
+                    const orderPromise = axios.post("http://localhost:8080/api/order/add-order", {
+                        foods: cartFoodData,
+                        amount: totalAmount, // Use totalAmount for order amount?
+                        customer: customer,
+                        paymentId: paymentId,
+                        adminApproved: false
+                    });
+    
+                    // Chain the deletion of cart items after the order is successfully added
+                    return orderPromise.then(() => {
+                        navigate(`/cart/${localStorage.getItem("username")}`);
+                        deleteAllCartItems();
+                    });
+                })
+                .catch(error => {
+                    console.error("Error in second POST request:", error);
+                    return Promise.reject(error);
+                });
+            } else {
+                console.log("Stripe payment request failed");
+                return Promise.reject("Stripe payment request failed");
+            }
+        } catch (error) {
+            console.error("Error in first POST request:", error);
+            return Promise.reject(error);
         }
+    };
+    
 
-    }
+
 
 
     const tokenHandler = (token) => {
         handleToken(totalAfterCoupon, token);
     }
+
+    const deleteAllCartItems = () => {
+        axios.delete(`http://localhost:8080/api/cart/delete/${localStorage.getItem('username')}`)
+            .then(response => {
+                console.log("Delete operation result:", response.data);
+            })
+            .catch(error => {
+                console.error("Error deleting carts:", error);
+            });
+    }
     return (
         <div className="container">
-    <h1>Payment</h1>
-    <div className="row mb-3">
-        <div className="col-6">
-            <TextField
-                label="Enter Coupon Code"
-                variant="outlined"
-                value={couponCode}
-                onChange={handleCouponCodeChange}
-                className="form-control"
-            />
-        </div>
-        <div className="col-3">
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleApplyCoupon}
-                className="btn btn-primary"
-            >
-                Apply Coupon
-            </Button>
-        </div>
-    </div>
-    <div>
-        {/* Display message for invalid coupon */}
-        {invalidCoupon && <div style={{ color: 'red' }}>Invalid Coupon</div>}
-        <div>Total: Rs. {total}</div>
-        {couponDiscount > 0 && <div>Coupon Discount: Rs. {couponDiscount}</div>}
-        {couponDiscount > 0 && <div>Total After Coupon: Rs. {totalAfterCoupon}</div>}
-    </div>
+            <h1>Payment</h1>
+            <div className="row mb-3">
+                <div className="col-6">
+                    <TextField
+                        label="Enter Coupon Code"
+                        variant="outlined"
+                        value={couponCode}
+                        onChange={handleCouponCodeChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="col-3">
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleApplyCoupon}
+                        className="btn btn-primary"
+                    >
+                        Apply Coupon
+                    </Button>
+                </div>
+            </div>
+            <div>
+                {/* Display message for invalid coupon */}
+                {invalidCoupon && <div style={{ color: 'red' }}>Invalid Coupon</div>}
+                <div>Total: Rs. {total}</div>
+                {couponDiscount > 0 && <div>Coupon Discount: Rs. {couponDiscount}</div>}
+                {couponDiscount > 0 && <div>Total After Coupon: Rs. {totalAfterCoupon}</div>}
+            </div>
             <Stripe
                 stripeKey="pk_test_51OuRCSJ53U8MN5Mj2obY1BkeJ1cl0bDIc5PnHEAOWQZUaipW0AUb95gC5z0wV8ohGaV4nS9rk3t0q0nM9A4z9tjP00MZmzpukX"
                 token={tokenHandler}
