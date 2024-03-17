@@ -21,7 +21,7 @@ const Reservation = () => {
 
   return (
     <div>
-        <div className="tabs">
+        <div className="tabs m-4">
         {tabDetails.map((tab) => (
           <button
             key={tab.id}
