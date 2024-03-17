@@ -17,14 +17,12 @@ router.get('/orders', async (req, res) => {
 
 router.post("/add-order", async (req, res) => {
     try {
-        const { amount, customer, paymentId, adminApproved } = req.body;
+        const { foods, amount, customer, paymentId, adminApproved } = req.body;
 
-        // Filter the cart items based on the userName (assuming it's a property of each cart item)
-        const filteredFoods = await Cart.find({ userName: 'maleesha4' });
-
+    
         // Create a new order document
         const newOrder = new Order({
-            foods: filteredFoods,
+            foods,
             amount,
             customer,
             paymentId,

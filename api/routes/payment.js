@@ -30,7 +30,7 @@ router.post("/add-payment", async (req, res) => {
     const newPayment = new Payment(newPaymentData);
 
     newPayment.save()
-        .then(() => res.json('Payment Added to the Cart'))
+        .then((payment) => res.json(payment))
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
