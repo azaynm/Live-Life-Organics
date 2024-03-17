@@ -17,8 +17,9 @@ const orderSchema = new Schema({
     paymentId:{
         type: String
     },
-    adminApproved:{
-        type: Boolean
+    status:{
+        type: String,
+        default: "pending"
     },
     time: { type: Number, default: Date.now }
 });  
