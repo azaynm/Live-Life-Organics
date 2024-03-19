@@ -3,16 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import ReservationForm from "../components/ReservationForm";
 
 function TableDetails() {
-    const navigate = useNavigate(); // Initialize useNavigate hook
+    const navigate = useNavigate(); 
 
     const handleBookNowClick = () => {
-      navigate("/ReservationForm"); // Navigate to ReservationForm component
+      navigate("/ReservationForm"); 
     };
 
       
   return (
     <div>
-      <div class="card-group m-5">
+      <div class="card-group">
         <div class="card m-5">
           <img
             src="./indoor.jpg"
