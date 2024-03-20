@@ -63,6 +63,9 @@ import Reservation from './pages/Reservation';
 import Test from './pages/Test';
 import PaymentGateway from './pages/PaymentGateway';
 import OrderApproval from './pages/OrderApproval';
+import Admin from './pages/Admin';
+import RegisterEmployee from './pages/RegisterEmployee';
+import LoginEmployee from './pages/LoginEmployee';
 
 
 
@@ -130,11 +133,19 @@ function App() {
 
   const fetchRole = async () => {
     try {
+<<<<<<< Updated upstream
       const { data: response } = await axios.get(
         `http://localhost:8080/api/users/getId/${localStorage.getItem(
           "username"
         )}`
       );
+=======
+      const { data: response } = await axios.get(`http://localhost:8080/api/users/getId/${localStorage.getItem("username")}`);
+
+      setRole(response.user.roles);
+      console.log("Your role is " + response.user.roles);
+      console.log(response);
+>>>>>>> Stashed changes
 
       setRole(response.user.roles);
       console.log("Your role is " + response.user.roles);
@@ -187,8 +198,25 @@ function App() {
 
            
 
+<<<<<<< Updated upstream
             <Route
               path="/my-account"
+=======
+
+            <Route path='/admin' element={
+              <Admin />
+            } />
+            <Route path='/reservation' element={
+
+              <Reservation />
+            } />
+
+
+<Route path='/employee-login' element={<LoginEmployee />} />
+
+
+            <Route path='/my-account'
+>>>>>>> Stashed changes
               element={
                 <Protected isLoggedIn={status}>
                   <MyAccount role={role} />
@@ -196,7 +224,16 @@ function App() {
               }
             />
 
+<<<<<<< Updated upstream
             <Route path="/payment" element={<PaymentGateway />} />
+=======
+            <Route path='/payment'
+              element={
+
+                <PaymentGateway />
+              }
+            />
+>>>>>>> Stashed changes
 
             <Route
               path="/cart/:id"
@@ -207,11 +244,15 @@ function App() {
               }
             />
 
+<<<<<<< Updated upstream
             <Route
               path="/delivery-management"
+=======
+            <Route path='/delivery-management'
+>>>>>>> Stashed changes
               element={
                 // <RoleProtected role={role} specificRole="systemAdmin">
-                  <DeliveryManagement />
+                <DeliveryManagement />
                 // </RoleProtected>
               }
             />
@@ -220,14 +261,18 @@ function App() {
               path="/event-management"
 
 
-<Route path='/order-approval'
+            <Route path='/order-approval'
               element={
                 // <RoleProtected role={role} specificRole="systemAdmin">
-                  <OrderApproval />
+                <OrderApproval />
                 // </RoleProtected>
               }
             />
 
+<<<<<<< Updated upstream
+=======
+            <Route path='/event-management'
+>>>>>>> Stashed changes
               element={
                 <RoleProtected role={role}>
                   <EventManagement />

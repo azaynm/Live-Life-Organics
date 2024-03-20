@@ -41,6 +41,7 @@ const Cart = () => {
 
   useEffect(() => {
     fetchCartFoodData();
+    console.log("Total",total);
   }, []);
 
   const deleteItem = async (id) => {
@@ -70,7 +71,6 @@ const Cart = () => {
   }
 
   useEffect(() => {
-    // Recalculate total after cartFoodData has been updated
     const newTotal = cartFoodData.reduce((accumulator, currentItem) => {
       return accumulator + currentItem.subTotal;
     }, 0);

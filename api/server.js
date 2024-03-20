@@ -1,6 +1,8 @@
 import express from "express";
 import {config} from "dotenv";
 import authRoutes from "./routes/auth.js";
+import employeeRoutes from "./routes/authEmployee.js";
+
 import dbConnect from "./dbConnect.js";
 import refreshTokenRoutes from "./routes/refreshToken.js"
 import userRoutes from "./routes/users.js";
@@ -33,6 +35,7 @@ app.use(express.urlencoded({
 app.use(cors());
 
 app.use("/api", authRoutes);
+app.use("/api/employee", employeeRoutes);
 app.use("/api/refreshToken", refreshTokenRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", imageRoutes);
