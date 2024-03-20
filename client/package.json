@@ -16,9 +16,10 @@
     "form-data": "^4.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
+    "react-datepicker": "^6.3.0",
     "react-dom": "^18.2.0",
     "react-horizontal-scrolling-menu": "^6.0.2",
-    "react-icons": "^4.7.1",
+    "react-icons": "^4.12.0",
     "react-scripts": "5.0.1",
     "react-scroll": "^1.9.0",
     "react-stripe-checkout": "^2.6.3",
@@ -50,6 +51,6 @@
     ]
   },
   "devDependencies": {
-    "react-router-dom": "^6.4.5"
+    "react-router-dom": "^6.22.3"
   }
 }
