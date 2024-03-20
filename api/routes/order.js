@@ -17,18 +17,16 @@ router.get('/orders', async (req, res) => {
 
 router.post("/add-order", async (req, res) => {
     try {
-        const { amount, customer, paymentId, adminApproved } = req.body;
+        const { foods, amount, customer, paymentId, status } = req.body;
 
-        // Filter the cart items based on the userName (assuming it's a property of each cart item)
-        const filteredFoods = await Cart.find({ userName: 'maleesha4' });
 
         // Create a new order document
         const newOrder = new Order({
-            foods: filteredFoods,
+            foods,
             amount,
             customer,
             paymentId,
-            adminApproved
+            status
         });
 
         // Save the new order to the database
@@ -40,5 +38,37 @@ router.post("/add-order", async (req, res) => {
     }
 });
 
+router.get('/:status', async (req, res) => {
+    const status = req.params.status;
+    try {
+        const readyOrders = await Order.find({ status: status });
+        res.json(readyOrders);
+    } catch (error) {
+        console.error(`Error fetching ${status}:`, error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+
+
+router.put('/update-status/:id', async (req, res) => {
+    const orderId = req.params.id;
+    const { status } = req.body;
+
+    try {
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        order.status = status;
+        await order.save();
+
+        res.json({ message: "Order status updated successfully", order });
+    } catch (error) {
+        console.error("Error updating order status:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 
 export default router;

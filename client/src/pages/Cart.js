@@ -13,10 +13,11 @@ const Cart = () => {
   const [cartFoodData, setCartFoodData] = useState([]);
   const [cartFoodLoading, setCartFoodLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [cart, setCart] = useState("");
   const navigate = useNavigate();
 
     const handleCheckout = () => {
-      navigate('/payment', { state: { total } });
+      navigate('/payment', { state: { total, cartFoodData } });
     };
    
   const fetchCartFoodData = async () => {
@@ -30,6 +31,7 @@ const Cart = () => {
         return accumulator + currentItem.subTotal;
     }, 0);
     setTotal(totalSubTotal); 
+    console.log(cartFoodData)
 
     } catch (error) {
       console.error(error.message);

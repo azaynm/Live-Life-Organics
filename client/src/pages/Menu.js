@@ -24,30 +24,30 @@ const Menu = ({ setIsOpenMenu }) => {
     return (
         <div className="form-overlay">
             <div className="form-container">
-                <img 
-                className="img-fluid" // Add Bootstrap class for responsive images
-                style={{ maxWidth: '30px', cursor: 'pointer' }} // Optional: set maximum width and cursor style
-                src="/close.png" onClick={()=>{setIsOpenMenu(false)}} />
+                <img
+                    className="img-fluid" // Add Bootstrap class for responsive images
+                    style={{ maxWidth: '30px', cursor: 'pointer' }} // Optional: set maximum width and cursor style
+                    src="/close.png" onClick={() => { setIsOpenMenu(false) }} />
                 <div className="tabs">
-                {tabDetails.map(tab => (
-                    <button
-                        key={tab.id}
-                        className={`tab btn btn-primary mx-2 ${activeTab === tab.id ? 'active' : ''}`}
-                        onClick={() => setActiveTab(tab.id)}
-                    >
-                        {tab.name}
-                    </button>
-                ))}
-            </div>
-            <div className="tab-content">
-                {tabDetails.map(tab => (
-                    <div key={tab.id}>
-                        {activeTab === tab.id && (
-                            <MenuCategory category={tab.category} />
-                        )}
-                    </div>
-                ))}
-            </div>
+                    {tabDetails.map(tab => (
+                        <button
+                            key={tab.id}
+                            className={`tab btn btn-primary mx-2 ${activeTab === tab.id ? 'active' : ''}`}
+                            onClick={() => setActiveTab(tab.id)}
+                        >
+                            {tab.name}
+                        </button>
+                    ))}
+                </div>
+                <div className="tab-content">
+                    {tabDetails.map(tab => (
+                        <div key={tab.id}>
+                            {activeTab === tab.id && (
+                                <MenuCategory category={tab.category} />
+                            )}
+                        </div>
+                    ))}
+                </div>
 
             </div>
         </div>
