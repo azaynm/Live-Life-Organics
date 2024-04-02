@@ -1,6 +1,8 @@
 import express from "express";
 import {config} from "dotenv";
 import authRoutes from "./routes/auth.js";
+import employeeRoutes from "./routes/authEmployee.js";
+
 import dbConnect from "./dbConnect.js";
 import refreshTokenRoutes from "./routes/refreshToken.js"
 import userRoutes from "./routes/users.js";
@@ -12,6 +14,7 @@ import inventoryRoutes from "./routes/inventory.js";
 import orderRoutes from "./routes/order.js";
 import stripeRoutes from "./routes/stripeRoute.js";
 import giftCardRoutes from "./routes/giftCard.js";
+import reservationRoutes from "./routes/reservation.js";
 import cors from "cors";
 
 
@@ -33,6 +36,7 @@ app.use(express.urlencoded({
 app.use(cors());
 
 app.use("/api", authRoutes);
+app.use("/api/employee", employeeRoutes);
 app.use("/api/refreshToken", refreshTokenRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", imageRoutes);
@@ -43,6 +47,7 @@ app.use("/api/order", orderRoutes);
 app.use("/api/delivery", deliveryRoutes);
 app.use("/api/gift-card", giftCardRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/reservation", reservationRoutes);
 app.use('/api/stripe', stripeRoutes);
 
 

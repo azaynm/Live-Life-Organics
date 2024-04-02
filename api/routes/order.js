@@ -17,7 +17,7 @@ router.get('/orders', async (req, res) => {
 
 router.post("/add-order", async (req, res) => {
     try {
-        const { foods, amount, customer, paymentId, status } = req.body;
+        const { foods, amount, customer, paymentId, address, city, phone } = req.body;
 
 
         // Create a new order document
@@ -26,7 +26,9 @@ router.post("/add-order", async (req, res) => {
             amount,
             customer,
             paymentId,
-            status
+            address,
+            city,
+            phone
         });
 
         // Save the new order to the database

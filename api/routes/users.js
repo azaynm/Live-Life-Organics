@@ -2,6 +2,7 @@ import { Router } from "express";
 import auth from "../middleware/auth.js";
 import roleCheck from "../middleware/roleCheck.js";
 import User from "../models/User.js";
+import Employee from "../models/Employee.js";
 
 const router = Router();
 
@@ -35,7 +36,10 @@ router.get("/getId/:id", async (req, res) => {
     const id = req.params.id;
     
     try {
-        const user = await User.findOne({ userName: id });
+        let user = await User.findOne({ userName: id });
+        if(!user){
+            user = await Employee.findOne({ userName: id });
+        }
         
         if (user) {
             

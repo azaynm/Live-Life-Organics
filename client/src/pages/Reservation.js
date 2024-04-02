@@ -1,9 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react';
+import TableDetails from '../components/TableDetails';
+import MyReservation from '../components/MyReservation';
 
 const Reservation = () => {
-  return (
-    <div>Reservation</div>
-  )
-}
+  const [activeTab, setActiveTab] = useState({ id: 'tab1', type: 'Indoor' });
 
-export default Reservation
+  const tabDetails = [
+    { id: 'tab1', name: 'Table Details', type: 'Indoor', component: <TableDetails /> },
+    { id: 'tab2', name: 'My Reservation', type: 'Outdoor', component: <MyReservation /> },
+  ];
+
+  const handleTabClick = (tabId, tabType) => {
+    setActiveTab({ id: tabId, type: tabType });
+  };
+
+  return (
+    <div>
+      <div className="tabs m-4">
+        {tabDetails.map((tab) => (
+          <button
+            key={tab.id}
+            className={`tab btn btn-primary mx-2 ${activeTab.id === tab.id ? 'active' : ''}`}
+            onClick={() => handleTabClick(tab.id, tab.type)}
+          >
+            {tab.name}
+          </button>
+        ))}
+      </div>
+      <div className='tab-content'>
+        {tabDetails.map((tab) => activeTab.id === tab.id && tab.component)}
+      </div>
+      <p>Selected tab type: {activeTab.type}</p>
+    </div>
+  );
+};
+
+export default Reservation;
