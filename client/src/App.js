@@ -28,6 +28,8 @@ import Reservation from './pages/Reservation';
 import Test from './pages/Test';
 import PaymentGateway from './pages/PaymentGateway';
 import OrderApproval from './pages/OrderApproval';
+import { Employee } from './pages/Employee';
+import AddGiftCard from './pages/AddGiftCard';
 
 
 
@@ -93,9 +95,9 @@ function App() {
   const fetchRole = async () => {
     try {
       const { data: response } = await axios.get(`http://localhost:8080/api/users/getId/${localStorage.getItem("username")}`);
-      
+
       setRole(response.user.roles);
-      console.log("Your role is "+ response.user.roles);
+      console.log("Your role is " + response.user.roles);
       console.log(response);
 
     } catch (error) {
@@ -159,56 +161,56 @@ function App() {
 
             <Route path='/' element={<Home categories={categories} />} />
 
-            
+
 
             <Route path='/reservation' element={
-            
-            <Reservation />
+
+              <Reservation />
             } />
 
 
-<Route path='/my-account'
+            <Route path='/my-account'
               element={
                 <Protected isLoggedIn={status}>
-                  <MyAccount role={role}/>
+                  <MyAccount role={role} />
                 </Protected>
               }
             />
 
-<Route path='/payment'
+            <Route path='/payment'
               element={
-               
-                  <PaymentGateway/>
+
+                <PaymentGateway />
               }
             />
 
             <Route path='/cart/:id'
               element={
                 <Protected isLoggedIn={status}>
-                  <Cart/>
+                  <Cart />
                 </Protected>
               }
 
             />
 
-<Route path='/delivery-management'
+            <Route path='/delivery-management'
               element={
                 // <RoleProtected role={role} specificRole="systemAdmin">
-                  <DeliveryManagement />
+                <DeliveryManagement />
                 // </RoleProtected>
               }
             />
 
 
-<Route path='/order-approval'
+            <Route path='/order-approval'
               element={
                 // <RoleProtected role={role} specificRole="systemAdmin">
-                  <OrderApproval />
+                <OrderApproval />
                 // </RoleProtected>
               }
             />
 
-<Route path='/event-management'
+            <Route path='/event-management'
               element={
                 <RoleProtected role={role}>
                   <EventManagement />
@@ -218,22 +220,32 @@ function App() {
 
             <Route path='/add-food'
               element={
-                <RoleProtected role={role}>
-                  <AddFood categories={categories}/>
+                <RoleProtected role={role} specificRole = "systemAdmin">
+                <AddFood categories={categories} />
                 </RoleProtected>
+              }
+            />
+
+            <Route path='/employee'
+              element={
+               // <RoleProtected role={role} specificRole = "systemAdmin">
+                <Employee />
+               // </RoleProtected>
               }
             />
 
             <Route path='/my-account'
               element={
                 <Protected isLoggedIn={status}>
-                  <MyAccount role={role}/>
+                  <MyAccount role={role} />
                 </Protected>
               }
             />
 
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
+
+            <Route path='/addgiftcard' element={<AddGiftCard />} />
 
           </Routes>
         </div>
