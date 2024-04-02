@@ -41,8 +41,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Admin from './pages/Admin';
 import RegisterEmployee from './pages/RegisterEmployee';
 import LoginEmployee from './pages/LoginEmployee';
+<<<<<<< Updated upstream
 import OrderApproval from "./pages/OrderApproval";
 import MyOrders from "./pages/MyOrders";
+=======
+import PendingReservations from "./pages/PendingReservations";
+>>>>>>> Stashed changes
 
 
 
