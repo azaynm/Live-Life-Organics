@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -41,8 +42,9 @@ function AddGiftCard() {
         };
 
         try {
-            // Replace this with your actual API call
-            console.log("Gift Card Data:", giftCardData);
+            // Make the POST request using axios
+            const response = await axios.post('http://localhost:8080/api/gift-card/gift-cards', giftCardData);
+            console.log("Gift Card Data:", response.data); // Assuming the API returns the created gift card data
             Swal.fire('Success!', 'Gift card added successfully.', 'success');
         } catch (error) {
             console.error("Error adding gift card:", error);

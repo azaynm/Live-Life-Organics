@@ -220,17 +220,17 @@ function App() {
 
             <Route path='/add-food'
               element={
-                <RoleProtected role={role} specificRole = "systemAdmin">
-                <AddFood categories={categories} />
+                <RoleProtected role={role} specificRole="systemAdmin">
+                  <AddFood categories={categories} />
                 </RoleProtected>
               }
             />
 
             <Route path='/employee'
               element={
-               // <RoleProtected role={role} specificRole = "systemAdmin">
+                // <RoleProtected role={role} specificRole = "systemAdmin">
                 <Employee />
-               // </RoleProtected>
+                // </RoleProtected>
               }
             />
 
@@ -245,7 +245,7 @@ function App() {
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
 
-            <Route path='/addgiftcard' element={<AddGiftCard />} />
+            <Route path='/add-gift-card' element={<AddGiftCard />} />
 
           </Routes>
         </div>
