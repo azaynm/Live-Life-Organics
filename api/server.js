@@ -14,6 +14,7 @@ import inventoryRoutes from "./routes/inventory.js";
 import orderRoutes from "./routes/order.js";
 import stripeRoutes from "./routes/stripeRoute.js";
 import giftCardRoutes from "./routes/giftCard.js";
+import reservationRoutes from "./routes/reservation.js";
 import cors from "cors";
 
 
@@ -46,6 +47,7 @@ app.use("/api/order", orderRoutes);
 app.use("/api/delivery", deliveryRoutes);
 app.use("/api/gift-card", giftCardRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/reservation", reservationRoutes);
 app.use('/api/stripe', stripeRoutes);
 
 

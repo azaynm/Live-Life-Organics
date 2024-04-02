@@ -102,6 +102,16 @@ router.get("/users/:id", async (req, res) => {
     res.json(cartItem.length);
 });
 
+router.delete('/delete-item/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await Cart.findOneAndDelete(id);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting carts", error: error });
+    }
+});
+
 router.delete('/delete/:customerId', async (req, res) => {
     try {
         const username = req.params.customerId;

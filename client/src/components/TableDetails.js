@@ -3,53 +3,61 @@ import { Link, useNavigate } from "react-router-dom";
 import ReservationForm from "../components/ReservationForm";
 
 function TableDetails() {
-    const navigate = useNavigate(); 
 
-    const handleBookNowClick = () => {
-      navigate("/ReservationForm"); 
-    };
 
-      
+  const navigate = useNavigate();
+
+  const handleBookNowClick = (tableType) => {
+    navigate("/ReservationForm", { state: { tableType } });
+  };
+
+
   return (
     <div>
-      <div class="card-group">
-        <div class="card m-5">
+      <div className="card-group">
+        <div className="card m-5">
           <img
             src="./indoor.jpg"
-            class="card-img-top"
-            alt=" "
+            className="card-img-top"
+            alt=""
             width="250px"
             height="350px"
           />
-          <div class="card-body">
-            <h5 class="card-title">Indoor Table</h5>
-            <p class="card-text">
+          <div className="card-body">
+            <h5 className="card-title">Indoor Table</h5>
+            <p className="card-text">
               This is a wider card with supporting text below as a natural
               lead-in to additional content. This content is a little bit
               longer.
             </p>
-            <Link to="/ReservationForm">
-            <button type="button" class="btn btn-success" onClick={handleBookNowClick}>
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={() => handleBookNowClick("Indoor")}
+            >
               BOOK NOW
             </button>
-            </Link>
           </div>
         </div>
-        <div class="card m-5">
+        <div className="card m-5">
           <img
             src="./outdoor.jpg"
-            class="card-img-top"
-            alt=" "
+            className="card-img-top"
+            alt=""
             width="250px"
             height="350px"
           />
-          <div class="card-body">
-            <h5 class="card-title">Outdoor Table</h5>
-            <p class="card-text">
+          <div className="card-body">
+            <h5 className="card-title">Outdoor Table</h5>
+            <p className="card-text">
               This card has supporting text below as a natural lead-in to
               additional content.
             </p>
-            <button type="button" class="btn btn-success" onClick={handleBookNowClick}>
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={() => handleBookNowClick("Outdoor")}
+            >
               BOOK NOW
             </button>
           </div>
@@ -57,6 +65,7 @@ function TableDetails() {
       </div>
     </div>
   );
+
 }
 
 export default TableDetails;

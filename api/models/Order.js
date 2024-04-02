@@ -21,6 +21,15 @@ const orderSchema = new Schema({
         type: String,
         default: "pending"
     },
+    address:{
+        type: String
+    },
+    city:{
+        type: String
+    },
+    phone:{
+        type: String
+    },
     time: { type: Number, default: Date.now }
 });  
 

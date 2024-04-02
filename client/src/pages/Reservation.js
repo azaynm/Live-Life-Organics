@@ -1,43 +1,38 @@
-import React,{useState} from 'react'
-import TableDetails from '../components/TableDetails'
-import MyReservation from '../components/MyReservation'
-
-
-
-
+import React, { useState } from 'react';
+import TableDetails from '../components/TableDetails';
+import MyReservation from '../components/MyReservation';
 
 const Reservation = () => {
-
-  const [activeTab, setActiveTab] = useState('tab1');
+  const [activeTab, setActiveTab] = useState({ id: 'tab1', type: 'Indoor' });
 
   const tabDetails = [
-    { id: 'tab1', name: 'Table Details', component: <TableDetails /> },
-    { id: 'tab2', name: 'My Reservation', component: <MyReservation /> },
+    { id: 'tab1', name: 'Table Details', type: 'Indoor', component: <TableDetails /> },
+    { id: 'tab2', name: 'My Reservation', type: 'Outdoor', component: <MyReservation /> },
   ];
 
-  const handleTabClick = (tabId) => {
-    setActiveTab(tabId);
+  const handleTabClick = (tabId, tabType) => {
+    setActiveTab({ id: tabId, type: tabType });
   };
 
   return (
     <div>
-        <div className="tabs m-4">
+      <div className="tabs m-4">
         {tabDetails.map((tab) => (
           <button
             key={tab.id}
-            className={`tab btn btn-primary mx-2 ${activeTab === tab.id ? 'active' : ''}`}
-            onClick={() => handleTabClick(tab.id)}
+            className={`tab btn btn-primary mx-2 ${activeTab.id === tab.id ? 'active' : ''}`}
+            onClick={() => handleTabClick(tab.id, tab.type)}
           >
             {tab.name}
           </button>
         ))}
       </div>
       <div className='tab-content'>
-      {tabDetails.map((tab) => activeTab === tab.id && tab.component)}
+        {tabDetails.map((tab) => activeTab.id === tab.id && tab.component)}
       </div>
+      <p>Selected tab type: {activeTab.type}</p>
     </div>
-    
-  )
-}
+  );
+};
 
-export default Reservation
+export default Reservation;

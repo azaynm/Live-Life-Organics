@@ -10,6 +10,13 @@ const PaymentGateway = () => {
     const [couponCode, setCouponCode] = useState('');
     const [couponDiscount, setCouponDiscount] = useState(0);
 
+    const [customer, setCustomer] = useState({});
+
+    const [address, setAddress] = useState("");
+
+    const [city, setCity] = useState("");
+    const [phone, setPhone] = useState("");
+
     const [invalidCoupon, setInvalidCoupon] = useState(false);
 
     const location = useLocation();
@@ -18,6 +25,18 @@ const PaymentGateway = () => {
     const [totalAfterCoupon, setTotalAfterCoupon] = useState(total);
 
     const navigate = useNavigate();
+
+    const handleAddressChange = (event) => {
+        setAddress(event.target.value);
+    };
+
+    const handleCityChange = (event) => {
+        setCity(event.target.value);
+    };
+
+    const handlePhoneChange = (event) => {
+        setPhone(event.target.value);
+    };
 
     const handleCouponCodeChange = (event) => {
         setCouponCode(event.target.value);
@@ -93,7 +112,9 @@ const PaymentGateway = () => {
                         amount: totalAmount, // Use totalAmount for order amount?
                         customer: customer,
                         paymentId: paymentId,
-                        adminApproved: false
+                        address: address,
+                        city: city,
+                        phone: phone
                     });
     
                     // Chain the deletion of cart items after the order is successfully added
@@ -115,12 +136,16 @@ const PaymentGateway = () => {
             return Promise.reject(error);
         }
     };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCustomer({ ...customer, [name]: value });
+    };
     
 
 
-
-
     const tokenHandler = (token) => {
+
         handleToken(totalAfterCoupon, token);
     }
 
@@ -164,6 +189,26 @@ const PaymentGateway = () => {
                 {couponDiscount > 0 && <div>Coupon Discount: Rs. {couponDiscount}</div>}
                 {couponDiscount > 0 && <div>Total After Coupon: Rs. {totalAfterCoupon}</div>}
             </div>
+
+            <div >
+                    <div className="mb-3">
+                        <label htmlFor="name" className="form-label">Your Name</label>
+                        <input type="text" className="form-control" id="name" name="name" value={customer.name} onChange={handleChange} />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="address" className="form-label">Address</label>
+                        <input type="text" className="form-control" id="address" name="address" value={address} onChange={handleAddressChange} />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="city" className="form-label">City</label>
+                        <input type="text" className="form-control" id="city" name="city" value={city} onChange={handleCityChange} />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="phone" className="form-label">Phone</label>
+                        <input type="text" className="form-control" id="phone" name="phone" value={phone} onChange={handlePhoneChange} />
+                    </div>
+                </div>
+
             <Stripe
                 stripeKey="pk_test_51OuRCSJ53U8MN5Mj2obY1BkeJ1cl0bDIc5PnHEAOWQZUaipW0AUb95gC5z0wV8ohGaV4nS9rk3t0q0nM9A4z9tjP00MZmzpukX"
                 token={tokenHandler}

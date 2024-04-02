@@ -56,7 +56,7 @@ const Cart = () => {
       if (result.isConfirmed) {
         Swal.fire('Removed Item!', '', 'success')
         try {
-          await fetch(`http://localhost:8080/api/cart/delete/${id}`, { method: "DELETE" });
+          await fetch(`http://localhost:8080/api/cart/delete-item/${id}`, { method: "DELETE" });
           // Update cartFoodData after successful deletion
           setCartFoodData(cartFoodData.filter(cartFoodItem => cartFoodItem._id !== id));
           
