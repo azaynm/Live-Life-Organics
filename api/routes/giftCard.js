@@ -10,33 +10,47 @@ router.get('/gift-cards', async (req, res) => {
     res.json(giftCards);
 })
 
-router.post("/add-gift-card", async (req, res) => {
-        
-    const customer = req.body.customer;
-    const code = req.body.code;
-    const category = req.body.category;
-    const amount = req.body.amount;
-    const issue_date = req.body.issue_date;
-    const expire_date = req.body.expire_date;
-    
+router.post('/gift-cards', async (req, res) => {
+    const giftCardData = req.body;
 
-    //res.secure_url
-
-    const newGiftCardData = {
-        customer,
-        code,
-        category,
-        amount,
-        issue_date,
-        expire_date
+    try {
+        const giftCard = new GiftCard(giftCardData);
+        await giftCard.save();
+        console.log('Gift card saved successfully');
+        res.status(201).send('Gift card added successfully');
+    } catch (error) {
+        console.error('Error saving gift card:', error);
+        res.status(500).send('Error adding gift card');
     }
-
-    const newGiftCard = new GiftCard(newGiftCardData);
-
-    newGiftCard.save()
-        .then(() => res.json('Gift Card Added to the DB'))
-        .catch(err => res.status(400).json('Error: ' + err));
 });
+
+// router.post("/add-gift-card", async (req, res) => {
+
+//     const customer = req.body.customer;
+//     const code = req.body.code;
+//     const category = req.body.category;
+//     const amount = req.body.amount;
+//     const issue_date = req.body.issue_date;
+//     const expire_date = req.body.expire_date;
+
+
+//     //res.secure_url
+
+//     const newGiftCardData = {
+//         customer,
+//         code,
+//         category,
+//         amount,
+//         issue_date,
+//         expire_date
+//     }
+
+//     const newGiftCard = new GiftCard(newGiftCardData);
+
+//     newGiftCard.save()
+//         .then(() => res.json('Gift Card Added to the DB'))
+//         .catch(err => res.status(400).json('Error: ' + err));
+// });
 
 router.get('/check-gift-card', async (req, res) => {
     try {
