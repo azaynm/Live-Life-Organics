@@ -12,6 +12,18 @@ router.get('/orders', async (req, res) => {
     res.json(orders);
 })
 
+router.get('/completed-orders/:username/:status', async (req, res) => {
+    const { username, status } = req.params;
+
+    try {
+        const orders = await Order.find({ customer: username, status });
+        res.json(orders);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+        res.status(500).json({ error: "Error fetching orders" });
+    }
+});
+
 
 
 

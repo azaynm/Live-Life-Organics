@@ -42,6 +42,7 @@ import Admin from './pages/Admin';
 import RegisterEmployee from './pages/RegisterEmployee';
 import LoginEmployee from './pages/LoginEmployee';
 import OrderApproval from "./pages/OrderApproval";
+import MyOrders from "./pages/MyOrders";
 
 
 
@@ -255,7 +256,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/Reservation" element={<Reservation />} />
             <Route path="/ReservationForm" element={<ReservationForm />} />
-
+            <Route path="/my-orders" element={<MyOrders />} />
           </Routes>
         </div>
       </BrowserRouter>
