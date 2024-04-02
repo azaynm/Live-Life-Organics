@@ -14,6 +14,7 @@ const Admin = () => {
         { id: 'tab3', name: 'Salary Management', url: '/salary-management' }
     ];
 
+    //s
     const handleTabClick = (tab) => {
         setActiveTab(tab.id);
         
