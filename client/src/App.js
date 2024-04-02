@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
-<<<<<<< Updated upstream
 import { Routes, Route, BrowserRouter, useNavigate, Navigate } from "react-router-dom";
 
 import Navbar from './Navbar';
@@ -33,13 +32,12 @@ import { Employee } from './pages/Employee';
 import AddGiftCard from './pages/AddGiftCard';
 
 
-=======
+
 import Admin from './pages/Admin';
 import RegisterEmployee from './pages/RegisterEmployee';
 import LoginEmployee from './pages/LoginEmployee';
 import OrderApproval from "./pages/OrderApproval";
 import PendingReservations from "./pages/PendingReservations";
->>>>>>> Stashed changes
 
 
 
