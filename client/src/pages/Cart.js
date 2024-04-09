@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import FormData from 'form-data';
 import Swal from 'sweetalert2';
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
 
 
 const Cart = () => {
@@ -15,11 +17,12 @@ const Cart = () => {
   const [total, setTotal] = useState(0);
   const [cart, setCart] = useState("");
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
 
-    const handleCheckout = () => {
-      navigate('/payment', { state: { total, cartFoodData } });
-    };
-   
+  const handleCheckout = () => {
+    navigate('/payment', { state: { total, cartFoodData } });
+  };
+
   const fetchCartFoodData = async () => {
     setCartFoodLoading(true);
     try {
@@ -29,9 +32,9 @@ const Cart = () => {
 
       const totalSubTotal = response.reduce((accumulator, currentItem) => {
         return accumulator + currentItem.subTotal;
-    }, 0);
-    setTotal(totalSubTotal); 
-    console.log(cartFoodData)
+      }, 0);
+      setTotal(totalSubTotal);
+      console.log(cartFoodData)
 
     } catch (error) {
       console.error(error.message);
@@ -41,7 +44,7 @@ const Cart = () => {
 
   useEffect(() => {
     fetchCartFoodData();
-    console.log("Total",total);
+    console.log("Total", total);
   }, []);
 
   const deleteItem = async (id) => {
@@ -59,7 +62,7 @@ const Cart = () => {
           await fetch(`http://localhost:8080/api/cart/delete-item/${id}`, { method: "DELETE" });
           // Update cartFoodData after successful deletion
           setCartFoodData(cartFoodData.filter(cartFoodItem => cartFoodItem._id !== id));
-          
+
         } catch (error) {
           console.error('Error deleting item:', error);
           Swal.fire('Error!', 'Failed to remove item from cart.', 'error');
@@ -76,57 +79,52 @@ const Cart = () => {
     }, 0);
     setTotal(newTotal);
   }, [cartFoodData]);
-  
+
+  const filteredCartItems = cartFoodData.filter(cartFoodItem =>
+    cartFoodItem.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
 
-  
 
 
   return (
-    <div className='row'>
+    <div className='container'>
+      <h2 className="mt-3 mb-4">Your Cart</h2>
+      <Form.Group controlId="formBasicSearch" className="mb-3">
+        <Form.Control
+          type="text"
+          placeholder="Search by name"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+        />
+      </Form.Group>
       {cartFoodLoading && <div>Loading</div>}
       {!cartFoodLoading && (
-        <div className="container col-sm-8">
-          {cartFoodData.map(item => (
-
-            <div className="row container-fluid d-flex align-items-center justify-content-center m-2">
-
-              <div className='row d-flex flex-row'>
-                <img className='img-circle ' src={item.imageUrl} alt="..." style={{ width: '150px', height: '100px' }} />
-                <div className='col d-flex align-items-center'>{item.name}</div>
-                <div className='col d-flex align-items-center'>Rs. {item.price}</div>
-                <div className='col d-flex align-items-center'>{item.quantity}</div>
-                <div className='col d-flex align-items-center'>Rs. {item.subTotal}</div>
-                <div className='col d-flex align-items-center align-items-end'>
-                  <Button variant="contained"  style={{ margin: '10px', width: '150px' }}>Edit</Button>
-                  <Button variant="contained" onClick={
-                    async () => {
-                      await deleteItem(item._id);
-
-                    }
-                  } style={{ margin: '10px', width: '150px' }}>Remove Item</Button>
+        <>
+          {filteredCartItems.map(item => (
+            <Card key={item._id} className="mb-3">
+              <Card.Body>
+                <div className="d-flex align-items-center">
+                  <img className='img-thumbnail mr-3' src={item.imageUrl} alt="..." style={{ width: '150px', height: '100px' }} />
+                  <div>
+                    <Card.Title>{item.name}</Card.Title>
+                    <Card.Text>Price: Rs. {item.price}</Card.Text>
+                    <Card.Text>Quantity: {item.quantity}</Card.Text>
+                    <Card.Text>Subtotal: Rs. {item.subTotal}</Card.Text>
+                    <Button variant="outline-danger" onClick={() => deleteItem(item._id)}>Remove</Button>
+                  </div>
                 </div>
-
-
-              </div>
-            </div>
+              </Card.Body>
+            </Card>
           ))}
-
-          
-        </div>
-
+        </>
       )}
-      <div className='row' style={{ position: 'fixed', marginBottom: '200px', marginRight: '200px', marginLeft: '200px', top: '400px' }}>
-        
-        <div className='col-sm'>
-        <Button variant="contained" style={{ margin: '10px', width: '150px' }} onClick={handleCheckout}>
-            Checkout Rs.{total}
-        </Button>
-        </div>
-        <div>
-        </div>
+      <div className='d-flex justify-content-end'>
+        <h4>Total: Rs.{total}</h4>
       </div>
-
+      <div className='d-flex justify-content-end mt-4'>
+        <Button variant="primary">Checkout</Button>
+      </div>
     </div>
   )
 }

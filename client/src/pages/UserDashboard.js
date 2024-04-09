@@ -4,21 +4,19 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import RegisterEmployee from './RegisterEmployee';
 import EditEmployee from './EmployeeDetails';
 import FeedbackMonitor from './FeedbackMonitor';
-import DeliveryApproval from './DeliveryApproval';
 import PendingReservations from './PendingReservations';
-import SalaryManagement from './SalaryManagement';
+import MyOrders from './MyOrders';
+import PurchaseGiftCard from './GiftCard';
+import Reservation from './Reservation';
 
-const Admin = () => {
+const UserDashboard = () => {
     const navigate = useNavigate(); // Initialize useNavigate hook
     const [activeTab, setActiveTab] = useState('tab1'); // State to manage active tab
 
     const tabDetails = [
-        { id: 'tab1', name: 'Add Employees', url: '/register-employee' }, // Example tab without category
-        { id: 'tab2', name: 'Edit Employees', url: '/edit-employee' }, // Change the URL for other tabs if needed
-        { id: 'tab3', name: 'Salary Management', url: '/salary-management' },
-        { id: 'tab4', name: 'Feedback Management', url: '/feedback-monitor' },
-        { id: 'tab5', name: 'Delivery Approval', url: '/delivery-approval' },
-        { id: 'tab6', name: 'Pending Reservations', url: '/pending-reservations' }
+        { id: 'tab1', name: 'My Orders', url: '/my-orders' }, // Example tab without category
+        { id: 'tab2', name: 'Purchase Gift Cards', url: '/purchase-gift-cards' }, 
+        { id: 'tab3', name: 'Reservations', url: '/reservations' }, 
         
     ];
 
@@ -50,12 +48,9 @@ const Admin = () => {
                 <div className='col-10'>
                     <div className="tab-content" id="v-pills-tabContent">
                         {/* Render RegisterEmployee component only if activeTab is 'tab1' */}
-                        {activeTab === 'tab1' && <RegisterEmployee />}
-                        {activeTab === 'tab2' && <EditEmployee />}
-                        {activeTab === 'tab3' && <SalaryManagement />}
-                        {activeTab === 'tab4' && <FeedbackMonitor />}
-                        {activeTab === 'tab5' && <DeliveryApproval />}
-                        {activeTab === 'tab6' && <PendingReservations />}
+                        {activeTab === 'tab1' && <MyOrders />}
+                        {activeTab === 'tab2' && <PurchaseGiftCard />}
+                        {activeTab === 'tab3' && <Reservation />}
                     </div>
                 </div>
             </div>
@@ -63,4 +58,4 @@ const Admin = () => {
     );
 }
 
-export default Admin;
+export default UserDashboard;

@@ -32,9 +32,9 @@ router.get('/isAdmin/:id', async (req, res) => {
 });
 
 
-router.get("/getId/:id", async (req, res) => {
-    const id = req.params.id;
-    
+router.get("/getId/:selectedUser", async (req, res) => {
+    const id = req.params.selectedUser;
+    console.log(id)
     try {
         let user = await User.findOne({ userName: id });
         if(!user){
@@ -51,6 +51,9 @@ router.get("/getId/:id", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+
+
 
 
 

@@ -30,7 +30,7 @@ const EmployeeDetails = () => {
         <section className="vh-100">
             <div className="container-fluid h-custom d-flex justify-content-center align-items-center">
                 {employeeData.map((emp) => (
-                    <EditEmployee key={emp._id} emp={emp} />
+                    <EditEmployee key={emp._id} emp={emp} fetchEmployeeData={fetchEmployeeData}/>
                 ))}
             </div>
         </section>

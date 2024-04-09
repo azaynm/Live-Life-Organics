@@ -5,12 +5,12 @@ import { useState, } from "react";
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
 import MenuCategory from '../components/MenuCategory';
-import OrderManagementCategory from '../components/OrderManagmentCategory';
-import './OrderApproval.css'
+import DeliveryManagementCategory from '../components/DeliveryManagementCategory';
+import './DeliveryApproval.css'
 
 const API_BASE = "http://localhost:8080";
 
-const OrderApproval = () => {
+const DeliveryApproval = () => {
 
     const [pendingOrderData, setPendingOrderData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,15 +21,17 @@ const OrderApproval = () => {
 
     const tabDetails = [
         { id: 'tab1', name: 'Pending', category: 'pending' },
-        { id: 'tab2', name: 'Ready to Deliver', category: 'ready-to-deliver' }
+        { id: 'tab2', name: 'Ready to Deliver', category: 'ready-to-deliver' },
+        { id: 'tab3', name: 'Delivering', category: 'delivering' },
+        { id: 'tab4', name: 'Completed', category: 'finished' }
     ];
 
- 
+
 
     return (
-   
-            <div className="form-container" style={{width:'100%'}}>
-                
+        <div className='container vh-100'>
+            <div className="form-container vh-100" style={{ width: '100%' }}>
+
                 <div className="tabs">
                     {tabDetails.map(tab => (
                         <button
@@ -45,17 +47,15 @@ const OrderApproval = () => {
                     {tabDetails.map(tab => (
                         <div key={tab.id}>
                             {activeTab === tab.id && (
-                                <OrderManagementCategory category={tab.category} />
+                                <DeliveryManagementCategory category={tab.category} />
                             )}
                         </div>
                     ))}
                 </div>
 
-
             </div>
-            
-
-            )
+        </div>
+    )
 }
 
-            export default OrderApproval
+export default DeliveryApproval

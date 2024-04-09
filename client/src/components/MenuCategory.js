@@ -10,6 +10,7 @@ const MenuCategory = ({ category }) => {
     const API_BASE = "http://localhost:8080";
     const [categoryMenuItems, setCategoryMenuItems] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchInput, setSearchInput] = useState('');
 
     const fetchCategoryMenuItems = async () => {
         try {
@@ -78,7 +79,7 @@ const MenuCategory = ({ category }) => {
             return updatedItems;
         });
     };
-    
+
     const handleDecreaseQuantity = (index) => {
         console.log('Decreasing quantity for item at index:', index);
         setCategoryMenuItems(prevItems => {
@@ -91,11 +92,22 @@ const MenuCategory = ({ category }) => {
         });
     };
 
+    const filteredMenuItems = categoryMenuItems.filter((menuItem) =>
+    menuItem.name.toLowerCase().includes(searchInput.toLowerCase())
+);
 
     return (
         <div className="scrollable-container">
+            <input
+                    type="text"
+                    className="form-control my-5"
+                    placeholder="Search by name"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                />
             <div className="row row-cols-1 row-cols-md-3 g-4">
-                {categoryMenuItems.map((menuItem, index) => (
+                
+                {filteredMenuItems.map((menuItem, index) => (
                     <div key={index} className="col">
                         <div className="card h-100">
                             <img src={menuItem.image} className="card-img-top" alt="..." style={{ width: '100px', height: '100px' }} />

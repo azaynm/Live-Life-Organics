@@ -73,10 +73,12 @@ Single Food
     box-sizing: border-box;
     list-style: none;
     font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
 }
 
+
+
 body {
-    padding: 5px;
     background-color: #7a34ca;
 }
 

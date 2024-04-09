@@ -30,7 +30,6 @@ const Reservation = () => {
       <div className='tab-content'>
         {tabDetails.map((tab) => activeTab.id === tab.id && tab.component)}
       </div>
-      <p>Selected tab type: {activeTab.type}</p>
     </div>
   );
 };

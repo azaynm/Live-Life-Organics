@@ -6,6 +6,8 @@ import bcrypt from "bcrypt";
 import { signUpBodyValidation, loginBodyValidation } from "../utils/employeeValidationSchema.js";
 import generateTokens from "../utils/generateTokens.js";
 import EmployeeToken from "../models/EmployeeToken.js";
+import DeliveryStaff from "../models/DeliveryStaff.js";
+import Cheff from "../models/Cheff.js";
 
 
 
@@ -42,7 +44,29 @@ router.post("/signUpEmployee", async (req, res) => {
 
 
         //update the password field with the hash password
-        await new Employee({ ...req.body, password: hashPassword }).save();
+        const newEmployee = await new Employee({ ...req.body, password: hashPassword }).save();
+
+        if (req.body.roles.includes("deliveryStaff")) {
+            const deliveryDetails = {
+                name: req.body.empName,
+                userId: newEmployee._id,
+            };
+
+            // Save the new delivery staff details to the database
+            const newDelivery = new DeliveryStaff(deliveryDetails);
+            await newDelivery.save();
+        }
+        if (req.body.roles.includes("cheff")) {
+            const cheffDetails = {
+                name: req.body.empName,
+                userId: newEmployee._id,
+            };
+
+            // Save the new delivery staff details to the database
+            const newCheff = new Cheff(cheffDetails);
+            await newCheff.save();
+        }
+
         res
             .status(201)
             .json({ error: false, message: "Account created successfully" });
@@ -54,22 +78,22 @@ router.post("/signUpEmployee", async (req, res) => {
 
 router.post("/getUser", async (req, res) => {
 
-        const user = await Employee.findOne({ email: req.body.email });
-        if (!user) res.status(401).json({ error: true, message: "user is not there" });
-        else if(user){
-            res.status(200).json({
-                error: false,
-                username: user.userName,
-                messaage: "User is there",
-            });
-        } 
+    const user = await Employee.findOne({ email: req.body.email });
+    if (!user) res.status(401).json({ error: true, message: "user is not there" });
+    else if (user) {
+        res.status(200).json({
+            error: false,
+            username: user.userName,
+            messaage: "User is there",
+        });
+    }
 })
 
 router.post("/get-user-details", async (req, res) => {
 
     const user = await Employee.findOne({ userName: req.body.username });
     if (!user) res.status(401).json({ error: true, message: "user is not there" });
-    else if(user){
+    else if (user) {
         res.status(200).json({
             error: false,
             username: user.userName,
@@ -83,7 +107,7 @@ router.post("/checkStatus", async (req, res) => {
 
     const token = await EmployeeToken.findOne({ token: req.body.refreshToken });
     if (!token) res.status(401).json({ error: true, loggedIn: false, message: "user is not logged in" });
-    else if(token){
+    else if (token) {
         res.status(200).json({
             error: false,
             loggedIn: true,
@@ -91,6 +115,49 @@ router.post("/checkStatus", async (req, res) => {
         });
     }
 })
+
+router.put('/employees/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // Get the employee ID from the request parameters
+        const updatedEmployeeData = req.body; // Get the updated employee details from the request body
+
+        // Find the employee by ID and update their details
+        const updatedEmployee = await Employee.findByIdAndUpdate(id, updatedEmployeeData, { new: true });
+
+        if (!updatedEmployee) {
+            // If the employee with the specified ID is not found, return a 404 Not Found response
+            return res.status(404).json({ error: 'Employee not found' });
+        } else {
+            if (req.body.roles.includes("deliveryStaff")) {
+                const deliveryDetails = {
+                    name: updatedEmployee.empName,
+                    userId: updatedEmployee._id,
+                };
+
+                // Save the new delivery staff details to the database
+                const newDelivery = new DeliveryStaff(deliveryDetails);
+                await newDelivery.save();
+            }
+
+            if (req.body.roles.includes("cheff")) {
+                const cheffDetails = {
+                    name: updatedEmployee.empName,
+                    userId: updatedEmployee._id,
+                };
+
+                // Save the new delivery staff details to the database
+                const newCheff = new Cheff(cheffDetails);
+                await newCheff.save();
+            }
+
+        }
+
+        res.json(updatedEmployee); // Respond with the updated employee details
+    } catch (error) {
+        console.error('Error updating employee:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 

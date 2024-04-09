@@ -52,6 +52,22 @@ router.post("/add-order", async (req, res) => {
     }
 });
 
+router.get('/orders/:customer', async (req, res) => {
+    try {
+      const customer = req.params.customer;
+      const orders = await Order.find({ customer });
+  
+      if (!orders) {
+        return res.status(404).json({ message: 'Orders not found for this customer' });
+      }
+  
+      return res.status(200).json(orders);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+
 router.get('/:status', async (req, res) => {
     const status = req.params.status;
     try {
@@ -65,9 +81,11 @@ router.get('/:status', async (req, res) => {
 
 
 
-router.put('/update-status/:id', async (req, res) => {
-    const orderId = req.params.id;
-    const { status } = req.body;
+router.put('/update-status/:selectedOrder', async (req, res) => {
+    const orderId = req.params.selectedOrder;
+    const { status, selectedCheff } = req.body;
+    console.log("selected order", orderId)
+    console.log("selected Staff", selectedCheff)
 
     try {
         const order = await Order.findById(orderId);
@@ -76,11 +94,34 @@ router.put('/update-status/:id', async (req, res) => {
         }
 
         order.status = status;
+        order.cheff = selectedCheff;
+        console.log("New order ",order.cheff)
         await order.save();
 
         res.json({ message: "Order status updated successfully", order });
     } catch (error) {
         console.error("Error updating order status:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+router.put('/assign-delivery', async (req, res) => {
+    const { orderId, staffId } = req.body;
+    console.log("Selected Staff",staffId)
+    try {
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        order.deliveryStaff = staffId;
+        order.status = "delivering";
+        console.log(order.status)
+        await order.save();
+
+        res.json({ message: "Delivert Staffupdated successfully", order });
+    } catch (error) {
+        console.error("Error updating delivery staff:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 });

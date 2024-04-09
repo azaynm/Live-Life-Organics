@@ -30,6 +30,16 @@ const orderSchema = new Schema({
     phone:{
         type: String
     },
+    deliveryStaff:{
+        type: String,
+    },
+    cheff:{
+        type: String,
+    },
+    isFeedbackGiven:{
+        type: Boolean,
+        default: false
+    },
     time: { type: Number, default: Date.now }
 });  
 

@@ -38,7 +38,7 @@ const employeeSchema = new Schema({
     },
     roles:{
         type:[String],
-        enum: ["systemAdmin", "employee", "eventCoordinator", "deliveryStaff", "cateringManager", "financialManager"],
+        enum: ["systemAdmin", "employee", "eventCoordinator", "deliveryStaff", "cateringManager", "financialManager", "cheff"],
         default: ["employee"], // You can set any default role here
     }
 });  

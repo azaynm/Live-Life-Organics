@@ -39,6 +39,12 @@ const reservationSchema = new Schema({
     type: Boolean,
     default: false
   },
+  fee: {
+    type: Number
+  },
+  paymentId:{
+    type: String
+},
   createdAt: {
     type: Date,
     default: Date.now
