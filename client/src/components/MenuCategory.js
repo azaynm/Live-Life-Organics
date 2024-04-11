@@ -15,7 +15,7 @@ const MenuCategory = ({ category }) => {
     const fetchCategoryMenuItems = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`${API_BASE}/api/${category}`);
+            const response = await axios.get(`${API_BASE}/api/menu/view-item/${category}`);
             const items = response.data.map(item => ({ ...item, quantity: 1 })); // Add quantity property to each item
             setCategoryMenuItems(items);
         } catch (error) {

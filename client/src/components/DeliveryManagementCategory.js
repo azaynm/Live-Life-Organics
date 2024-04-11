@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import './DeliveryManagementCategory.css';
 import FormData from 'form-data';
 import LoadingSpinner from './LoadingSpinner';
+import PDFDeliveries from '../utils/PDFDeliveries';
 
 const DeliveryManagementCategory = ({ category }) => {
 
@@ -80,35 +81,87 @@ const DeliveryManagementCategory = ({ category }) => {
         setIsOpenCheffAssign(true);
     }
 
-    const makeReady = async (e) => {
-        console.log("Selected Order id: ", selectedOrder)
-        console.log("Selected Cheff id: ", selectedCheff)
-
-        try {
-            const response = await axios.put(`${API_BASE}/api/order/update-status/${selectedOrder}`, { status: "ready-to-deliver", selectedCheff });
-            fetchReadyItems();
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error updating order status:", error);
-            throw error;
+    const makeReady = async () => {
+        setIsOpenCheffAssign(false);
+        // Show confirmation dialog before making the order ready
+        const result = await Swal.fire({
+            icon: 'question',
+            title: 'Assign Cheff',
+            text: 'Are you sure you want to assign a cheff to this order?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, assign',
+            cancelButtonText: 'No, cancel',
+        });
+    
+        if (result.isConfirmed) {
+            try {
+                const response = await axios.put(`${API_BASE}/api/order/update-status/${selectedOrder}`, { status: "ready-to-deliver", selectedCheff });
+             
+                console.log(response.data);
+                // Show success message
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Order assigned successfully!',
+                    timer: 1500
+                });
+                fetchReadyItems();
+            } catch (error) {
+                console.error("Error updating order status:", error);
+                // Show error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to make order ready. Please try again later.',
+                    timer: 1500
+                });
+                throw error;
+            }
         }
     };
+    
 
 
 
-    const assignOrder = async (e) => {
-        console.log("assign order")
+    const assignOrder = async () => {
+        setIsOpenDeliveryAssign(false);
         const orderId = selectedOrder;
         const staffId = selectedStaff;
-        try {
-            const response = await axios.put(`${API_BASE}/api/order/assign-delivery`, { orderId, staffId }); // Fixed selectedStaff to staffId
-            console.log('Delivery staff updated successfully:', response.data);
-            fetchReadyItems();
-            setIsOpenDeliveryAssign(false);
-        } catch (error) {
-            console.error('Error updating delivery staff:', error.response.data);
-        }
-
+    
+        // Show confirmation dialog before assigning order
+        Swal.fire({
+            icon: 'question',
+            title: 'Assign Delivery',
+            text: 'Are you sure you want to assign this delivery staff?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, assign',
+            cancelButtonText: 'No, cancel',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await axios.put(`${API_BASE}/api/order/assign-delivery`, { orderId, staffId });
+                    console.log('Delivery staff updated successfully:', response.data);
+                    fetchReadyItems();
+                    setIsOpenDeliveryAssign(false);
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Order assigned successfully!',
+                        timer: 1500
+                    });
+                } catch (error) {
+                    console.error('Error updating delivery staff:', error.response.data);
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to assign delivery. Please try again later.',
+                        timer: 1500
+                    });
+                }
+            }
+        });
     };
 
 
@@ -132,209 +185,217 @@ const DeliveryManagementCategory = ({ category }) => {
         (category === "finished" && (pendingOrder.cheff.toLowerCase().includes(searchQuery.toLowerCase()) || pendingOrder.deliveryStaff.toLowerCase().includes(searchQuery.toLowerCase())) )
     );
 
-
+    const finishOrder = async (selectedOrder) => {
+        try {
+            const confirmed = await Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to complete this order?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, complete it!",
+            });
+    
+            if (confirmed.isConfirmed) {
+                const response = await axios.put(`http://localhost:8080/api/order/complete-order/${selectedOrder}`);
+                console.log(response.data);
+                fetchReadyItems();
+                // Handle success response
+            } else {
+                // User clicked cancel, do nothing or handle accordingly
+            }
+        } catch (error) {
+            console.error("Error completing order:", error);
+            // Handle error
+        }
+    };
+    
+    
 
     return (
         <div className="scrollable-container py-3">
-            <div className="mb-3">
-                <input
-                    className='form-control'
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                />
-            </div>
-            <div className="row row-cols-1 row-cols-md-3 g-4">
 
-                {isLoading ? (
-                    <LoadingSpinner />
-                ) : (
-                    filteredPendingOrders.map((item, index) => (
-                        <div className="card" style={{}} key={index}>
-                            <div className="card-body">
-                                <h5 className="card-title">Order Details</h5>
-                                <div className="col">
-                                    <div className="col-md-6">
-                                        <table className="table">
-                                            <tbody>
+{category === "finished" && (
+    <PDFDeliveries/>
+)}
+    <div className="mb-3">
+        <input
+            className='form-control'
+            type="text"
+            placeholder="Search by name"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+        />
+    </div>
+    <div className="row row-cols-1 row-cols-md-2 g-4">
+
+        {isLoading ? (
+            <LoadingSpinner />
+        ) : (
+            filteredPendingOrders.map((item, index) => (
+                <div className="card" style={{}} key={index}>
+                    <div className="card-body">
+                        <h5 className="card-title">Order Details</h5>
+                        <div className="row">
+                            <div className="row">
+                                <table className="table sub-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th className="text-end">Quantity</th>
+                                            <th className="text-end">Price</th>
+                                            <th className="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {item.foods.map((food, index) => (
+                                            <tr key={index}>
+                                                <td><img src={food.imageUrl} width={40} alt={food.name} /></td>
+                                                <td>{food.name}</td>
+                                                <td className="text-end">{food.quantity}</td>
+                                                <td className="text-end">{food.price}</td>
+                                                <td className="text-end">Rs.{food.subTotal}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="row">
+                                <table className="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Amount</td>
+                                            <td className='text-end'><b>Rs.{item.amount}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Customer</td>
+                                            <td className='text-end'>{item.customer}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Order Id</td>
+                                            <td className='text-end'>{item._id}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>PaymentId</td>
+                                            <td className='text-end'>{item.paymentId}</td>
+                                        </tr>
+                                        {category === "ready-to-deliver" && (
+                                            <tr>
+                                                <td>Cheff</td>
+                                                <td className='text-end'>{item.cheff}</td>
+                                            </tr>
+                                        )}
+                                        {category === "delivering" && (
+                                            <>
                                                 <tr>
-                                                    <td>Ordered Items</td>
+                                                    <td>Cheff</td>
+                                                    <td className='text-end'>{item.cheff}</td>
                                                 </tr>
-                                                {item.foods.map((food, index) => (
-                                                    <tr key={index} style={{ height: '100%', overflowY: 'auto' }}>
-                                                        <td>
-                                                            <div className='d-flex flex-row'>
-                                                                <div style={{ width: '40px' }}>
-                                                                    <img src={food.imageUrl} width={40} />
-                                                                </div>
-                                                                <div style={{ width: '100px' }}>{food.name}</div>
-                                                                <div className="d-flex justify-content-end" style={{ width: '50px' }}>{food.quantity}</div>
-                                                                <div className="d-flex justify-content-end" style={{ width: '50px' }}>{food.price}</div>
-                                                                <div className="d-flex justify-content-end" style={{ width: '80px' }}>Rs.{food.subTotal}</div>
-
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="col-md">
-                                        <table className="table">
-                                            <tbody>
                                                 <tr>
-                                                    <td>Amount</td>
-                                                    <td className='d-flex justify-content-end'><b>Rs.{item.amount}</b></td>
+                                                    <td>Delivery Staff</td>
+                                                    <td className='text-end'>{item.deliveryStaff}</td>
                                                 </tr>
-
+                                            </>
+                                        )}
+                                        {category === "finished" && (
+                                            <>
                                                 <tr>
-                                                    <td>Customer</td>
-                                                    <td className='d-flex justify-content-end'>{item.customer}</td>
+                                                    <td>Cheff</td>
+                                                    <td className='text-end'>{item.cheff}</td>
                                                 </tr>
-
                                                 <tr>
-                                                    <td>Order Id</td>
-                                                    <td className='d-flex justify-content-end'>{item._id}</td>
+                                                    <td>Delivery Staff</td>
+                                                    <td className='text-end'>{item.deliveryStaff}</td>
                                                 </tr>
-
-                                                <tr>
-                                                    <td>PaymentId</td>
-                                                    <td className='d-flex justify-content-end'>{item.paymentId}</td>
-                                                </tr>
-
+                                            </>
+                                        )}
+                                        <tr>
+                                            <td colSpan="2">
+                                                {category === "pending" && (
+                                                    <button className='btn btn-primary' onClick={() => openCheffAssign(item._id)} style={{ width: '100%' }}>Assign Cheff</button>
+                                                )}
                                                 {category === "ready-to-deliver" && (
-                                                    <tr>
-                                                        <td>Cheff</td>
-                                                        <td className='d-flex justify-content-end'>{item.cheff}</td>
-                                                    </tr>
+                                                    <button className='btn btn-primary' onClick={() => openDeliveryAssign(item._id)} style={{ width: '100%' }}>Assign Delivery Staff</button>
                                                 )}
-
                                                 {category === "delivering" && (
-                                                    <>
-                                                        <tr>
-                                                            <td>Cheff</td>
-                                                            <td className='d-flex justify-content-end'>{item.cheff}</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Deliver Staff</td>
-                                                            <td className='d-flex justify-content-end'>{item.deliveryStaff}</td>
-                                                        </tr>
-                                                    </>
+                                                    <button className='btn btn-primary' onClick={() => finishOrder(item._id)} style={{ width: '100%' }}>Finish</button>
                                                 )}
-
-                                                {category === "finished" && (
-                                                    <>
-                                                        <tr>
-                                                            <td>Cheff</td>
-                                                            <td className='d-flex justify-content-end'>{item.cheff}</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Deliver Staff</td>
-                                                            <td className='d-flex justify-content-end'>{item.deliveryStaff}</td>
-                                                        </tr>
-                                                    </>
-                                                )}
-
-
-                                                <tr>
-                                                    <td style={{ width: '100%' }}>
-                                                        {category === "pending" && (
-                                                            <button className='btn btn-primary' onClick={() => openCheffAssign(item._id)} style={{ width: '100%' }}>Assign Cheff</button>
-                                                        )}
-                                                        {category === "ready-to-deliver" && (
-                                                            <button className='btn btn-primary' onClick={() => openDeliveryAssign(item._id)} style={{ width: '100%' }}>Assign Deliver Staff</button>
-                                                        )}
-                                                        {category === "delivering" && (
-                                                            <button className='btn btn-primary' style={{ width: '100%' }}>Finish</button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-
-                    ))
-                )}
-
-                {isOpenDeliveryAssign && (
-                    <div className="form-overlay">
-                        <div className="form-container">
-                            <form className="d-flex flex-column justify-content-between">
-                                <div className="m-4 d-flex justify-content-around">
-                                    <button className="btn btn-danger" type="button" onClick={() => setIsOpenDeliveryAssign(false)}>
-                                        Close
-                                    </button>
-                                    <button className="btn btn-primary" onClick={() => assignOrder()}>Assign Order</button>
-                                </div>
-                                <div className="m-4">
-
-                                    <div className="form-group">
-                                        <select
-                                            className="form-select"
-                                            name="selectedStaff"
-                                            value={selectedStaff}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="">Select Delivery Staff:</option>
-                                            {deliveryStaff.map((staff, index) => (
-                                                <option key={index} value={staff.id}>{staff.name}</option>
-                                            ))}
-                                        </select>
-
-                                    </div>
-
-
-                                </div>
-                            </form>
-                        </div>
                     </div>
-                )}
+                </div>
+            ))
+        )}
 
-                {isOpenCheffAssign && (
-                    <div className="form-overlay">
-                        <div className="form-container">
-                            <form className="d-flex flex-column justify-content-between">
-                                <div className="m-4 d-flex justify-content-around">
-                                    <button className="btn btn-danger" type="button" onClick={() => setIsOpenCheffAssign(false)}>
-                                        Close
-                                    </button>
-                                    <button className="btn btn-primary" onClick={() => makeReady()}>Assign Cheff</button>
-                                </div>
-                                <div className="m-4">
-
-                                    <div className="form-group">
-                                        <select
-                                            className="form-select"
-                                            name="selectedCheff"
-                                            value={selectedCheff}
-                                            onChange={handleChangeCheff}
-                                        >
-                                            <option value="">Select Cheff:</option>
-                                            {cheff.map((staff, index) => (
-                                                <option key={index} value={staff.id}>{staff.name}</option>
-                                            ))}
-                                        </select>
-
-                                    </div>
-
-
-                                </div>
-                            </form>
+        {isOpenDeliveryAssign && (
+            <div className="form-overlay">
+                <div className="form-container">
+                    <form className="d-flex flex-column justify-content-between">
+                        <div className="m-4 d-flex justify-content-around">
+                            <button className="btn btn-danger" type="button" onClick={() => setIsOpenDeliveryAssign(false)}>
+                                Close
+                            </button>
+                            <button className="btn btn-primary" onClick={() => assignOrder()}>Assign Delivery</button>
                         </div>
-                    </div>
-                )}
-
-
+                        <div className="m-4">
+                            <div className="form-group">
+                                <select
+                                    className="form-select"
+                                    name="selectedStaff"
+                                    value={selectedStaff}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Select Delivery Staff:</option>
+                                    {deliveryStaff.map((staff, index) => (
+                                        <option key={index} value={staff.id}>{staff.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        )}
+
+        {isOpenCheffAssign && (
+            <div className="form-overlay">
+                <div className="form-container">
+                    <form className="d-flex flex-column justify-content-between">
+                        <div className="m-4 d-flex justify-content-around">
+                            <button className="btn btn-danger" type="button" onClick={() => setIsOpenCheffAssign(false)}>
+                                Close
+                            </button>
+                            <button className="btn btn-primary" onClick={() => makeReady()}>Assign Cheff</button>
+                        </div>
+                        <div className="m-4">
+                            <div className="form-group">
+                                <select
+                                    className="form-select"
+                                    name="selectedCheff"
+                                    value={selectedCheff}
+                                    onChange={handleChangeCheff}
+                                >
+                                    <option value="">Select Cheff:</option>
+                                    {cheff.map((staff, index) => (
+                                        <option key={index} value={staff.id}>{staff.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
+
+    </div>
+</div>
+
 
     );
 }

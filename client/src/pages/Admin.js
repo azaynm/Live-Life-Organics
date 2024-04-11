@@ -7,6 +7,11 @@ import FeedbackMonitor from './FeedbackMonitor';
 import DeliveryApproval from './DeliveryApproval';
 import PendingReservations from './PendingReservations';
 import SalaryManagement from './SalaryManagement';
+import EditInventoryItem from './EditInventorItem';
+import AddInventoryItem from './AddInventoryItem';
+import InventoryDashboard from './InventoryDashboard';
+import AddMenuItem from './AddMenuItem';
+import MenuDashbaord from './MenuDashbaord';
 
 const Admin = () => {
     const navigate = useNavigate(); // Initialize useNavigate hook
@@ -18,48 +23,51 @@ const Admin = () => {
         { id: 'tab3', name: 'Salary Management', url: '/salary-management' },
         { id: 'tab4', name: 'Feedback Management', url: '/feedback-monitor' },
         { id: 'tab5', name: 'Delivery Approval', url: '/delivery-approval' },
-        { id: 'tab6', name: 'Pending Reservations', url: '/pending-reservations' }
+        { id: 'tab6', name: 'Pending Reservations', url: '/pending-reservations' },
+        { id: 'tab7', name: 'Inventory Dashboard', url: '/inventory-dashboard' },
+        { id: 'tab8', name: 'Menu Dashboard', url: '/menu-dashboard' }
+
         
     ];
 
-    //s
+    const [categories, setCategories] = useState(["Entrees", "Appetizers", "SideDishes", "Salads", "Soups", "Desserts", "Beverages", "Specials"]);
+
     const handleTabClick = (tab) => {
         setActiveTab(tab.id);
         
     };
 
     return (
-        <div className=''>
-            <div className='row'>
-                {/* Sidebar */}
-                <div className='col-2 bg-dark'>
-                    <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        {tabDetails.map(tab => (
-                            <button
-                                key={tab.id}
-                                className={`nav-link ${activeTab === tab.id ? 'active' : ''}`}
-                                onClick={() => handleTabClick(tab)} // Call handleTabClick function on click
-                            >
-                                {tab.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Content Area */}
-                <div className='col-10'>
-                    <div className="tab-content" id="v-pills-tabContent">
-                        {/* Render RegisterEmployee component only if activeTab is 'tab1' */}
-                        {activeTab === 'tab1' && <RegisterEmployee />}
-                        {activeTab === 'tab2' && <EditEmployee />}
-                        {activeTab === 'tab3' && <SalaryManagement />}
-                        {activeTab === 'tab4' && <FeedbackMonitor />}
-                        {activeTab === 'tab5' && <DeliveryApproval />}
-                        {activeTab === 'tab6' && <PendingReservations />}
-                    </div>
-                </div>
-            </div>
+        <div className='h-100 d-flex'>
+    <div className='col-2 bg-dark'>
+        <div className="nav flex-column nav-pills vh-100" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            {tabDetails.map(tab => (
+                <button
+                    key={tab.id}
+                    className={`nav-link ${activeTab === tab.id ? 'active' : ''}`}
+                    onClick={() => handleTabClick(tab)} // Call handleTabClick function on click
+                >
+                    {tab.name}
+                </button>
+            ))}
         </div>
+    </div>
+
+    <div className='col-10 h-100'>
+        <div className="tab-content" id="v-pills-tabContent">
+            {/* Render components based on activeTab */}
+            {activeTab === 'tab1' && <RegisterEmployee />}
+            {activeTab === 'tab2' && <EditEmployee />}
+            {activeTab === 'tab3' && <SalaryManagement />}
+            {activeTab === 'tab4' && <FeedbackMonitor />}
+            {activeTab === 'tab5' && <DeliveryApproval />}
+            {activeTab === 'tab6' && <PendingReservations />}
+            {activeTab === 'tab7' && <InventoryDashboard />}
+            {activeTab === 'tab8' && <MenuDashbaord />}
+        </div>
+    </div>
+</div>
+
     );
 }
 

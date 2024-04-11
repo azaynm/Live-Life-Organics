@@ -15,17 +15,16 @@ router.get('/inventory', async (req, res) => {
 
 
 
-router.post("/add-delivery", async (req, res) => {
-    const { foodId, itemName, quantity, category, supplier, cost, sellingPrice } = req.body;
+router.post("/add-inventory", async (req, res) => {
+    const { name, quantity, price, supplier, expirationDate, category } = req.body;
     
     const newInventoryData = {
-        foodId,
-        itemName,
+        name,
         quantity,
-        category,
+        price,
         supplier,
-        cost,
-        sellingPrice
+        expirationDate,
+        category        
     };
 
     const newInventory = new Inventory(newInventoryData);
@@ -37,5 +36,52 @@ router.post("/add-delivery", async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+
+router.get('/get-inventory/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const inventory = await Inventory
+            .findById(id)
+            .populate('category')
+            .exec();
+
+        res.json(inventory);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+router.put('/update-inventory/:id', async (req, res) => {
+    const { name, quantity, price, supplier, expirationDate, category } = req.body;
+    const { id } = req.params;
+
+    try {
+        const updatedInventory = await Inventory.findByIdAndUpdate(id, {
+            name,
+            quantity,
+            price,
+            supplier,
+            expirationDate,
+            category
+        });
+
+        res.json(updatedInventory);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+router.delete('/delete-inventory/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedInventory = await Inventory.findByIdAndDelete(id);
+        res.json(deletedInventory);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 
 export default router;

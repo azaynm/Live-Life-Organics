@@ -1,7 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Cart from "../models/Cart.js";
-import Food from "../models/Food.js";
+import Food from "../models/Menu.js";
 import User from "../models/User.js";
 
 const router = Router();

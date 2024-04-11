@@ -31,7 +31,7 @@ const UserDashboard = () => {
             <div className='row'>
                 {/* Sidebar */}
                 <div className='col-2 bg-dark'>
-                    <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <div className="nav flex-column nav-pills vh-100" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                         {tabDetails.map(tab => (
                             <button
                                 key={tab.id}

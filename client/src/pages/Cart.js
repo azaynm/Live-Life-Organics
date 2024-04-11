@@ -123,7 +123,7 @@ const Cart = () => {
         <h4>Total: Rs.{total}</h4>
       </div>
       <div className='d-flex justify-content-end mt-4'>
-        <Button variant="primary">Checkout</Button>
+        <Button variant="primary" onClick={handleCheckout}>Checkout</Button>
       </div>
     </div>
   )

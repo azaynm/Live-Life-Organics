@@ -145,6 +145,20 @@ const Navbar = ({ role, setStatus, status, logOut }) => {
       >
         Reservation
       </Link>
+
+      {role.includes("systemAdmin") ? (
+        <Link
+          to="/admin"
+          style={{
+            color: "white",
+            fontWeight: "bold",
+            textDecoration: "none",
+            padding: "10px",
+          }}
+        >
+          Admin Dashboard
+        </Link>
+      ) : null}
     </nav>
   );
 };

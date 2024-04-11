@@ -1,12 +1,23 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import Food from "../models/Food.js";
+import Menu from "../models/Menu.js";
 import multer from "multer";
 import cloudinary from "cloudinary";
 
 
 const router = Router();
 
+router.get('/menu', async (req, res) => {
+  const menu = await Menu.find();
+  res.json(menu);
+})
+
+router.get('/:id', async (req, res) => {
+  const id = req.params.id;
+  const menuItem = await Menu.findById(id);
+
+  res.json(menuItem)
+})
 
 const storage = multer.diskStorage({
   filename: function(req, file, callback) {
@@ -41,45 +52,75 @@ router.post("/upload", upload.single("image"), async(req, res) => {
   const description = req.body.description;
   const quantity = req.body.quantity;
   const category = req.body.category;
-  const supplier = req.body.supplier;
-  const cost = req.body.cost;
     const sellingPrice = req.body.sellingPrice;
     const image = result.secure_url;
    
     //res.secure_url
 
-    const newFoodData = {
+    const newItemData = {
         name,
         description,
         quantity,
         category,
-        supplier,
-        cost,
         sellingPrice,
         image
        
     }
     
-    const newFood = new Food(newFoodData);
+    const newItem = new Menu(newItemData);
 
-    newFood.save()
-        .then(()=> res.json('Food Added'))
+    newItem.save()
+        .then(()=> res.json('Menu Item Added'))
         .catch(err => res.status(400).json('Error: '+ err));
 });
 
 router.get('/get-food', async (req, res) => {
   const id = req.body.id;
-  const food = await Food.findById(id);
+  const food = await Menu.findById(id);
   res.json(food);
 })
 
+router.put("/:itemId", upload.single("image"), async (req, res) => {
+  const { itemId } = req.params;
+  console.log(req.body)
+  try {
+      // Find the food item by its ID
+      const food = await Menu.findById(itemId);
 
-router.get('/:category', async (req, res) => {
+      // Check if there's a new image uploaded
+      if (req.file && req.file.path) {
+          // Upload the image to Cloudinary
+          const result = await cloudinary.v2.uploader.upload(req.file.path);
+          food.image = result.secure_url;
+          console.log("Image url ", food.image)
+      }
+
+      // Update food details with the data from the request body
+      food.name = req.body.name;
+      food.description = req.body.description;
+      food.quantity = req.body.quantity;
+      food.category = req.body.category;
+      food.sellingPrice = req.body.sellingPrice;
+
+      // Save the updated food item
+      const updatedFood = await food.save();
+
+      // Send a response indicating success
+      res.status(200).json({ message: 'Food updated successfully', data: updatedFood });
+  } catch (error) {
+      // Handle any errors and send an error response
+      console.error('Error updating food:', error);
+      res.status(500).json({ error: 'An error occurred while updating food' });
+  }
+});
+
+
+router.get('/view-item/:category', async (req, res) => {
   let category = req.params.category;
   // Capitalize the first character of the category
   category = category.charAt(0).toUpperCase() + category.slice(1);
   try {
-    const categoryItems = await Food.find({ category: category });
+    const categoryItems = await Menu.find({ category: category });
     res.json(categoryItems);
   } catch (error) {
     console.error(`Error fetching ${category}:`, error);
@@ -165,16 +206,28 @@ router.get('/:category', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const id = req.params.id;
-  const food = await Food.findById(id);
+  const food = await Menu.findById(id);
 
   res.json(food)
 })
 
 router.get('/getImage/:id', async (req, res) => {
   const id = req.params.id;
-  const food = await Food.findById(id);
+  const food = await Menu.findById(id);
   res.json(food.image);
 
 })
+
+router.delete('/delete-item/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const deletedMenu = await Menu.findByIdAndDelete(id);
+      res.json(deletedMenu);
+  } catch (error) {
+      res.status(400).json({ message: error.message });
+  }
+});
+
 
 export default router;

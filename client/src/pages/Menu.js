@@ -4,7 +4,7 @@ import axios from 'axios';
 import MenuCategory from '../components/MenuCategory';
 
 
-const Menu = ({ setIsOpenMenu }) => {
+const Menu = () => {
     const API_BASE = "http://localhost:8080";
     const [menuItems, setMenuItems] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -22,12 +22,8 @@ const Menu = ({ setIsOpenMenu }) => {
         // Add more tabs as needed
     ];
     return (
-        <div className="form-overlay">
+        <div className="">
             <div className="form-container">
-                <img
-                    className="img-fluid" // Add Bootstrap class for responsive images
-                    style={{ maxWidth: '30px', cursor: 'pointer' }} // Optional: set maximum width and cursor style
-                    src="/close.png" onClick={() => { setIsOpenMenu(false) }} />
                 <div className="tabs">
                     {tabDetails.map(tab => (
                         <button

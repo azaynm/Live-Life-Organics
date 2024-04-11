@@ -7,6 +7,8 @@ import { ScrollMenu } from 'react-horizontal-scrolling-menu';
 import MenuCategory from '../components/MenuCategory';
 import DeliveryManagementCategory from '../components/DeliveryManagementCategory';
 import './DeliveryApproval.css'
+import Swal from 'sweetalert2';
+import PDFDeliveries from '../utils/PDFDeliveries';
 
 const API_BASE = "http://localhost:8080";
 
@@ -42,6 +44,7 @@ const DeliveryApproval = () => {
                             {tab.name}
                         </button>
                     ))}
+                    
                 </div>
                 <div className="tab-content">
                     {tabDetails.map(tab => (
@@ -52,7 +55,7 @@ const DeliveryApproval = () => {
                         </div>
                     ))}
                 </div>
-
+               
             </div>
         </div>
     )

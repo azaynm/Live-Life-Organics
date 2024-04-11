@@ -105,6 +105,26 @@ router.put('/update-status/:selectedOrder', async (req, res) => {
     }
 });
 
+router.put('/complete-order/:selectedOrder', async (req, res) => {
+    const orderId = req.params.selectedOrder;
+   
+
+    try {
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        order.status = "finished";
+        await order.save();
+
+        res.json({ message: "Order status updated successfully", order });
+    } catch (error) {
+        console.error("Error updating order status:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 router.put('/assign-delivery', async (req, res) => {
     const { orderId, staffId } = req.body;
     console.log("Selected Staff",staffId)

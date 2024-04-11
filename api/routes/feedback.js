@@ -52,6 +52,20 @@ router.post("/submit-feedback", async (req, res) => {
       res.status(500).json({ error: "Failed to submit feedback" });
     }
   });
+
+  router.get("/fetch-staff/:orderId", async (req, res) => {
+    const orderId = req.params.orderId;
+    try {
+      // Find all feedbacks
+      const order = await Order.findById(orderId);
+      // Return the feedbacks as JSON response
+      return res.json({cheff: order.cheff, deliveryStaff: order.deliveryStaff});
+    } catch (error) {
+      // If an error occurs, handle it
+      console.error("Error fetching feedbacks:", error);
+      return res.status(500).json({ error: "Failed to fetch feedbacks" });
+    }
+  });
   
 
   export default router;

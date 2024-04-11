@@ -10,6 +10,32 @@ router.get('/reservations', async(req, res)=>{
   res.json(reservations);
 })
 
+//report genearation
+router.post('/approved-reservations', async (req, res) => {
+  try {
+    const { date } = req.body;
+    if (!date) {
+      return res.status(400).json({ error: 'Date is required in the request body' });
+    }
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0); // Start of the passed date
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999); // End of the passed date
+
+    // Query for reservations with isApproved=true and selectedDate within the passed date
+    const reservations = await Reservation.find({
+      isApproved: true,
+      selectedDate: { $gte: startOfDay, $lte: endOfDay }
+    });
+
+    res.json(reservations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/reservations/user/:userId', async(req, res)=>{
   const userId = req.params.userId;
   const reservations = await Reservation.find({username:userId});

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Button } from 'bootstrap';
 import React, { useEffect, useState } from 'react';
+import PDFReservations from '../utils/PDFReservations';
 
 const PendingReservations = () => {
     const API_BASE = "http://localhost:8080";
@@ -53,8 +54,10 @@ const PendingReservations = () => {
 
 
     return (
-        <div className="container vh-100">
+        <div className="container v-100">
             <h2>View Reservations</h2>
+           
+            <PDFReservations/>
             <div className="mb-3">
                 <input
                     type="text"

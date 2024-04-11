@@ -9,18 +9,7 @@ const Home = ({ homeFoodData, homeFoodLoading}) => {
 
   return (
     <div>
-      
-      <button className='btn btn-primary' onClick={() => {
-                setIsOpenMenu(true)
-                console.log('menu clicked clicked')
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}>Menu</button>
-
-
-      {isOpenMenu && (
-
-        <Menu setIsOpenMenu={setIsOpenMenu}/>
-      )}
+        <Menu/>
     </div>
   )
 }

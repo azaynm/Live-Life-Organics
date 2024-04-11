@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const foodSchema = new Schema({
-    name:{
+    name:{ 
         type: String
     },
     description:{
@@ -15,12 +15,6 @@ const foodSchema = new Schema({
     category:{
         type:[String],
         enum: ["Appetizers", "Entrees", "SideDishes", "Salads", "Soups", "Desserts", "Beverages", "Specials"],
-    },
-    supplier:{
-        type: Object
-    },
-    cost:{
-        type: Number
     },
     sellingPrice:{
         type: Number

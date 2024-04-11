@@ -3,29 +3,38 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const inventorySchema = new Schema({
-    foodId:{
-        type: Object
+    name: {
+        type: String,
+        required: true
     },
-    itemName:{
-        type: String
+    quantity: {
+        type: Number,
+        required: true
     },
-    quantity:{
-        type: Number
+    price: {
+        type: Number,
+        required: true
     },
-    category:{
-        type:[String],
-        enum: ["Produce", "Meat", "Beverages", "Utensils"],
+    supplier: {
+        type: String,
+        required: true
     },
-    supplier:{
-        type: Object
+    date: {
+        type: Date,
+        default: Date.now
     },
-    cost:{
-        type: Number
+    expirationDate: {
+        type: Date,
+        required: true
     },
-    sellingPrice:{
-        type: Number
+    category: {
+        type: String,
+        required: true,
+        enum: ['ingredient', 'food', 'beverage']        
     }
-});  
+});
 
-const Inventory = mongoose.model("Inventory", inventorySchema);
+const Inventory = mongoose.model('Inventory', inventorySchema);
+
 export default Inventory;
+    

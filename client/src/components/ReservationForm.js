@@ -294,7 +294,7 @@ function ReservationForm() {
         </div>
       ) : (
         <Stripe
-          stripeKey="your_stripe_publishable_key"
+          stripeKey="pk_test_51OuRCSJ53U8MN5Mj2obY1BkeJ1cl0bDIc5PnHEAOWQZUaipW0AUb95gC5z0wV8ohGaV4nS9rk3t0q0nM9A4z9tjP00MZmzpukX"
           token={handleToken}
           style={{ width: '200px' }}
         />

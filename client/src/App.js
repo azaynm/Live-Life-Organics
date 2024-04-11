@@ -13,7 +13,7 @@ import Login from './pages/Login';
 import Protected from './Protected';
 import { Context } from './Context';
 import React, { useEffect, useState } from 'react';
-import AddFood from './pages/AddFood';
+import AddFood from './pages/AddMenuItem';
 import SingleFood from './pages/SingleFood';
 import Cart from './pages/Cart';
 import Swal from 'sweetalert2'
@@ -43,6 +43,10 @@ import Feedback from './pages/Feedback';
 import FeedbackMonitor from './pages/FeedbackMonitor';
 import UserDashboard from './pages/UserDashboard';
 import GiftCard from './pages/GiftCard';
+import EditInventoryItem from './pages/EditInventorItem';
+import AddInventoryItem from './pages/AddInventoryItem';
+import InventoryDashboard from './pages/InventoryDashboard';
+import EditMenuItem from './pages/EditMenuItem';
 
 
 
@@ -229,13 +233,14 @@ function App() {
               }
             />
 
-            <Route path='/add-food'
+            <Route path='/add-menu'
               element={
-                <RoleProtected role={role} specificRole="systemAdmin">
-                  <AddFood categories={categories} />
-                </RoleProtected>
+                <AddFood categories={categories} />
               }
             />
+
+
+            <Route path='/edit-menu-item/:itemId' element={<EditMenuItem categories={categories}/>} />
 
             {/* <Route path='/employee'
               element={
@@ -254,7 +259,7 @@ function App() {
             />
 
             <Route path='/register' element={<Register />} />
-            <Route path='/login' element={<Login setStatus={setStatus}/>} />
+            <Route path='/login' element={<Login setStatus={setStatus} />} />
 
             <Route path='/add-gift-card' element={<AddGiftCard />} />
 
@@ -268,6 +273,9 @@ function App() {
 
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/gift-card" element={<GiftCard />} />
+            <Route path='/edit-inventor-item/:id' element={<EditInventoryItem />} />
+            <Route path='/add-inventory-item' element={<AddInventoryItem />} />
+            <Route path='/inventory-dashboard' element={<InventoryDashboard />} />
           </Routes>
         </div>
 
